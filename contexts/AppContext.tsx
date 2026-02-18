@@ -64,6 +64,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const { data, success } = await walletService.getWallet(user.id);
     if (success && data) {
       setWalletBalance(data.balance);
+      setTotalPoints(data.points_balance || 0);
     }
   };
 
@@ -75,11 +76,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const addToCart = async (product: any) => {
-    // Add loyalty points
-    const pointsToAdd = Math.round((product.price || 0) * 10);
+    // Add loyalty points with Profit
+    const basePts = Math.round((product.price || 0) * 10);
+    const pointsToAdd = Math.round(basePts * walletService.PROFIT_MULTIPLIER);
+
     setTotalPoints(prev => prev + pointsToAdd);
     setPointsPop(true);
     setTimeout(() => setPointsPop(false), 600);
+
+    // Save to DB
+    if (user?.id) {
+      walletService.addPoints(user.id, pointsToAdd, `Loyalty Profit for ${product.name_ar || product.name || 'item'}`);
+    }
 
     const existingItem = cart.find(item => item.product_id === product.id);
     if (existingItem) {
