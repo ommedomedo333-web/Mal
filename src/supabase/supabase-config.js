@@ -29,13 +29,6 @@ export const isSupabaseConfigured = () => {
   );
 };
 
-// تحقق من الـ session بعد Login
-supabase.auth.onAuthStateChange((event, session) => {
-  console.log('Event:', event);
-  console.log('App metadata:', session?.user?.app_metadata);
-  console.log('Email:', session?.user?.email);
-});
-
 // تهيئة العميل فقط إذا كانت الإعدادات صالحة
 export const supabase = isSupabaseConfigured()
   ? createClient(supabaseUrl, supabaseAnonKey, {
@@ -114,3 +107,11 @@ export const supabase = isSupabaseConfigured()
       invoke: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } })
     }
   };
+
+// ✅ FIX: Moved AFTER `supabase` is declared to avoid Temporal Dead Zone (TDZ) ReferenceError.
+// Previously this block appeared before `export const supabase = ...`, causing the crash.
+supabase.auth.onAuthStateChange((event, session) => {
+  console.log('Event:', event);
+  console.log('App metadata:', session?.user?.app_metadata);
+  console.log('Email:', session?.user?.email);
+});
