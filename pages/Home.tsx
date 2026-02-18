@@ -435,16 +435,154 @@ const Home: React.FC = () => {
         )}
       </h1>
       
-      <div className="hero-zoom__buttons">
+      
+    </div>
+  )
+},
+    {
+  id: 1,
+  image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=2000',
+  content: (
+    <div className="max-w-7xl mx-auto px-4 w-full">
+      <style>{`
+        .feature-card {
+          backdrop-filter: blur(12px);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .feature-card:hover {
+          transform: translateY(-8px);
+          background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .feature-icon {
+          transition: all 0.4s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+          transform: scale(1.15) rotate(5deg);
+        }
+        
+        .stats-number {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
+      
+      <div className="text-center mb-12">
+        <div className="flex justify-center mb-6">
+          <span className="px-6 py-2.5 bg-fruit-primary/20 text-fruit-primary text-xs md:text-sm font-black uppercase tracking-[0.25em] border border-fruit-primary/30 rounded-full backdrop-blur-md ae-1">
+            {language === 'ar' ? '✨ طبيعي 100% • طازج يومياً' : '✨ 100% NATURAL • FRESH DAILY'}
+          </span>
+        </div>
+        
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter ae-2 mb-6 leading-tight">
+          {language === 'ar' ? (
+            <>
+              سوق <span className="text-fruit-primary">الفواكه الأطيب</span>
+            </>
+          ) : (
+            <>
+              <span className="text-fruit-primary">ELATYAB</span> MARKET
+            </>
+          )}
+        </h1>
+        
+        <p className="ae-3 mb-10 text-lg md:text-xl text-white/70 max-w-3xl mx-auto font-medium leading-relaxed">
+          {language === 'ar' 
+            ? 'استمتع بأجود أنواع الفواكه والخضروات المختارة بعناية من المزارع إليك مباشرة مع خدمة التوصيل السريع.' 
+            : 'Enjoy the finest selection of fruits and vegetables, handpicked from farms directly to your doorstep with express delivery.'}
+        </p>
+      </div>
+
+      {/* Features Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 ae-4">
+        {/* Feature 1 - Fresh & Quality */}
+        <div className="feature-card bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl p-6 md:p-8">
+          <div className="feature-icon text-4xl md:text-5xl mb-4 floating">🌱</div>
+          <h3 className="text-xl md:text-2xl font-black mb-3 text-white">
+            {language === 'ar' ? 'طازج يومياً' : 'Fresh Daily'}
+          </h3>
+          <p className="text-sm md:text-base text-white/60 leading-relaxed">
+            {language === 'ar' 
+              ? 'يتم اختيار كل ثمرة بعناية في الصباح الباكر لضمان أقصى درجات النضج والطعم.' 
+              : 'Each fruit is carefully selected early in the morning to ensure peak ripeness and flavor.'}
+          </p>
+        </div>
+
+        {/* Feature 2 - Express Delivery */}
+        <div className="feature-card bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl p-6 md:p-8">
+          <div className="feature-icon text-4xl md:text-5xl mb-4 floating" style={{animationDelay: '0.5s'}}>⚡</div>
+          <h3 className="text-xl md:text-2xl font-black mb-3 text-white">
+            {language === 'ar' ? 'توصيل سريع' : 'Express Delivery'}
+          </h3>
+          <p className="text-sm md:text-base text-white/60 leading-relaxed">
+            {language === 'ar' 
+              ? 'استلام الطلب المريح في أقل من ساعة.' 
+              : 'Receive your order at optimal temperature in less than 6 hours.'}
+          </p>
+        </div>
+
+        {/* Feature 3 - Quality Control */}
+        <div className="feature-card bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl p-6 md:p-8">
+          <div className="feature-icon text-4xl md:text-5xl mb-4 floating" style={{animationDelay: '1s'}}>✓</div>
+          <h3 className="text-xl md:text-2xl font-black mb-3 text-white">
+            {language === 'ar' ? 'فحص الجودة' : 'Quality Control'}
+          </h3>
+          <p className="text-sm md:text-base text-white/60 leading-relaxed">
+            {language === 'ar' 
+              ? 'اختبارات دقيقة لضمان خلو المنتجات من الكيماويات والمبيدات.' 
+              : 'Rigorous testing to ensure products are free from chemicals and pesticides.'}
+          </p>
+        </div>
+      </div>
+
+      {/* Stats Section */}
+      <div className="grid grid-cols-3 gap-4 md:gap-6 mb-10 ae-5">
+        <div className="text-center bg-white/5 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-md">
+          <div className="stats-number text-3xl md:text-5xl font-black mb-2">علي مدار الساعة </div>
+          <div className="text-xs md:text-sm text-white/60 font-medium">
+            {language === 'ar' ? 'ذكاء اصطناعي يرد علي استفساراتك' : 'Eco Packaging'}
+          </div>
+        </div>
+        
+        <div className="text-center bg-white/5 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-md">
+          <div className="stats-number text-3xl md:text-5xl font-black mb-2">+1200</div>
+          <div className="text-xs md:text-sm text-white/60 font-medium">
+            {language === 'ar' ? 'عميل سعيد' : 'Happy Customers'}
+          </div>
+        </div>
+        
+        <div className="text-center bg-white/5 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-md">
+          <div className="stats-number text-3xl md:text-5xl font-black mb-2">1h</div>
+          <div className="text-xs md:text-sm text-white/60 font-medium">
+            {language === 'ar' ? 'من المزرعة لبابك' : 'Farm to Door'}
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Buttons */}
+      <div className="flex flex-col sm:flex-row justify-center gap-4 ae-6">
         <button 
           onClick={() => navigate('/categories')} 
-          className="hero-zoom__button bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 md:px-12 py-3 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-sm md:text-lg backdrop-blur-md"
+          className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 backdrop-blur-md shadow-lg"
         >
           {t.categories}
         </button>
         <button 
           onClick={() => navigate('/blogs')} 
-          className="hero-zoom__button bg-fruit-primary hover:bg-fruit-primary/80 text-white px-6 md:px-12 py-3 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-sm md:text-lg shadow-2xl shadow-fruit-primary/30"
+          className="w-full sm:w-auto bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 shadow-xl shadow-fruit-primary/30"
         >
           {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
         </button>
@@ -452,35 +590,6 @@ const Home: React.FC = () => {
     </div>
   )
 },
-    {
-      id: 1,
-      image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=2000',
-      content: (
-        <div className="max-w-7xl mx-auto px-4 w-full text-center">
-          <div className="flex justify-center mb-8">
-            <span className="px-4 py-2 bg-fruit-primary/20 text-fruit-primary text-[10px] md:text-xs font-black uppercase tracking-[0.2em] border border-fruit-primary/30 rounded-full ae-1 backdrop-blur-md">
-              {language === 'ar' ? 'طبيعي 100% • طازج يومياً' : '100% NATURAL • FRESH DAILY'}
-            </span>
-          </div>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-black tracking-tighter ae-2 mb-6 leading-tight">
-            {language === 'ar' ? 'سوق الفواكه ' : 'ELATYAB '}
-            <span className="text-fruit-primary">{language === 'ar' ? 'الأطيب' : 'MARKET'}</span>
-          </h1>
-          <p className="ae-3 mb-8 md:mb-12 text-base md:text-2xl text-white/60 max-w-3xl mx-auto font-medium leading-relaxed">
-            {language === 'ar' ? 'استمتع بأجود أنواع الفواكه والخضروات المختارة بعناية من المزارع إليك مباشرة مع خدمة التوصيل السريع.' : 'Enjoy the finest selection of fruits and vegetables, handpicked from farms directly to your doorstep with express delivery.'}
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-6 ae-4">
-            <button onClick={() => navigate('/categories')} className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-xl transition-all active:scale-95 backdrop-blur-md">
-              {t.categories}
-            </button>
-            <button onClick={() => navigate('/blogs')} className="w-full sm:w-auto bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-xl transition-all active:scale-95 shadow-xl shadow-fruit-primary/20">
-              {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
-            </button>
-          </div>
-        </div>
-      )
-    },
-
     {
       id: 3,
       image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2000',
