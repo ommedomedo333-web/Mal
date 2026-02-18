@@ -37,6 +37,7 @@ interface AppContextType {
   clearCart: () => void;
   totalPoints: number;
   pointsPop: boolean;
+  refreshWallet: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -76,19 +77,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const addToCart = async (product: any) => {
-    // Add loyalty points with Profit
-    const basePts = Math.round((product.price || 0) * 10);
-    const pointsToAdd = Math.round(basePts * walletService.PROFIT_MULTIPLIER);
-
-    setTotalPoints(prev => prev + pointsToAdd);
-    setPointsPop(true);
-    setTimeout(() => setPointsPop(false), 600);
-
     // Save to DB
-    if (user?.id) {
-      walletService.addPoints(user.id, pointsToAdd, `Loyalty Profit for ${product.name_ar || product.name || 'item'}`);
-    }
-
     const existingItem = cart.find(item => item.product_id === product.id);
     if (existingItem) {
       updateQuantity(product.id, existingItem.quantity + 1);
@@ -199,6 +188,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           }
         }).catch(err => console.error('Admin email failed:', err));
 
+        // 3. Award BTS Points for purchase
+        const btsToEarn = Math.round(cartTotal * 1.5);
+        if (user?.id) {
+          await walletService.addPoints(user.id, btsToEarn, `Purchase Award for Order ${orderNumber}`);
+        }
+        setTotalPoints(prev => prev + btsToEarn);
+        setPointsPop(true);
+        setTimeout(() => setPointsPop(false), 2000);
+
         toast.success(t.orderPlaced, { id: loadingToast });
         clearCart();
         fetchCart();
@@ -221,7 +219,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{
       language, setLanguage, t, cart, addToCart, removeFromCart, placeOrder, cartTotal, searchQuery, setSearchQuery, user, setUser, loading,
       paymentMethod, setPaymentMethod, walletBalance, cartCount, updateQuantity, clearCart,
-      totalPoints, pointsPop
+      totalPoints, pointsPop, refreshWallet: fetchWalletBalance
     }}>
       {children}
     </AppContext.Provider>
