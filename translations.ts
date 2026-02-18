@@ -36,6 +36,7 @@ export const translations = {
     orders: 'Orders',
     off: 'OFF',
     noResults: 'No results found',
+    btsAwards: 'BTS Awards',
   },
   ar: {
     placingOrder: 'جاري وضع طلبك...',
@@ -73,6 +74,7 @@ export const translations = {
     orders: 'الطلبات',
     off: 'خصم',
     noResults: 'لم يتم العثور على نتائج',
+    btsAwards: 'مكافآت BTS',
   },
 };
 
