@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { walletService } from '../src/supabase/supabase-service';
 import { useAppContext } from '../contexts/AppContext';
+import { useWalletContext } from '../src/supabase/context-providers';
 import { Lock, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +19,8 @@ const MAZE_RINGS = [
 ];
 
 const Buzzer: React.FC = () => {
-  const { user, language } = useAppContext();
+  const { user, language, refreshWallet } = useAppContext();
+  const { refetch: refetchWalletData } = useWalletContext();
   const navigate = useNavigate();
   const [ballPos, setBallPos] = useState({ x: 97, y: 50 });
   const [hasWonToday, setHasWonToday] = useState(false);
@@ -146,9 +148,10 @@ const Buzzer: React.FC = () => {
       const reward = Math.round(200 * walletService.PROFIT_MULTIPLIER);
       const res = await walletService.addPoints(user.id, reward, 'Maze Game Daily Reward');
       if (res.success) {
-        // @ts-ignore
-        const { refreshWallet } = useAppContext();
+        // Refresh both contexts to ensure UI sync
         if (refreshWallet) refreshWallet();
+        if (refetchWalletData) refetchWalletData();
+
         toast.success(language === 'ar' ? `مبروك! ربحت ${reward} BTS!` : `Congratulations! You earned ${reward} BTS!`, {
           duration: 5000,
           position: 'top-center',
