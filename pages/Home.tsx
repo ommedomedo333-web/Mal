@@ -96,99 +96,66 @@ const Home: React.FC = () => {
   id: 0,
   image: 'https://design-fenix.com.ar/codepen/scroll/scene.webp',
   content: (
-    <div className="hero-container">
+    <div className="hero-zoom-wrapper">
       <style>{`
-        .hero-container {
+        @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@800&display=swap');
+        
+        * {
+          padding: 0;
+          margin: 0;
+        }
+        
+        .hero-zoom-wrapper {
           position: relative;
           height: 100vh;
+          width: 100%;
           overflow: hidden;
         }
         
-        .hero__starship, .hero__scene {
+        .hero-zoom__starship,
+        .hero-zoom__scene {
           width: 100%;
           height: 100%;
-          object-fit: cover;
-          position: fixed;
+          object-fit: fill;
+          position: absolute;
           left: 50%;
           top: 50%;
           transform: translate(-50%, -50%);
         }
         
-        .hero__title {
+        .hero-zoom__title {
           font-family: "Oxanium", sans-serif;
           font-optical-sizing: auto;
           font-weight: 800;
           font-style: normal;
-          position: fixed;
-          font-size: clamp(1.6rem, 10vw, 8rem);
+          position: absolute;
+          font-size: clamp(2rem, 10vw, 8rem);
           white-space: nowrap;
           color: white;
           left: 50%;
           top: 50%;
           transform: translate(-50%, -50%);
           z-index: 2;
-          animation: contract linear forwards;
-          animation-timeline: scroll(root);
-          animation-range: 0vh 100dvh;
+          animation: zoomContract 8s ease-in-out infinite;
           mix-blend-mode: overlay;
           text-align: center;
           line-height: 1.2;
         }
         
-        .hero__starship {
-          animation: upscale linear forwards;
-          animation-timeline: scroll(root);
-          animation-range: 0vh 60vh;
+        .hero-zoom__starship {
+          animation: starshipZoom 8s ease-in-out infinite;
           z-index: 3;
           pointer-events: none;
         }
         
-        .hero__scene {
-          animation: unblur linear forwards;
-          animation-timeline: scroll(root);
-          animation-range: 0vh 100dvh;
+        .hero-zoom__scene {
+          animation: sceneZoom 8s ease-in-out infinite;
           z-index: 1;
           pointer-events: none;
         }
         
-        @keyframes contract {
-          0% {
-            letter-spacing: -1.5rem;
-            opacity: 0;
-          }
-          100% {
-            letter-spacing: 0;
-            opacity: 1;
-          }
-        }
-        
-        @keyframes unblur {
-          0% {
-            filter: blur(10px);
-            transform: translate(-50%, -50%) scale(1.1);
-          }
-          100% {
-            transform: translate(-50%, -50%) scale(1.4);
-            filter: blur(0px);
-          }
-        }
-        
-        @keyframes upscale {
-          0% {
-            transform: translate(-50%, -50%) scale(1);
-          }
-          95% {
-            transform: translate(-50%, -50%) scale(5);
-            opacity: 1;
-          }
-          100% {
-            transform: translate(-50%, -50%) scale(5);
-            opacity: 1;
-          }
-        }
-        
-        .hero__buttons {
-          position: fixed;
+        .hero-zoom__buttons {
+          position: absolute;
           bottom: 10%;
           left: 50%;
           transform: translateX(-50%);
@@ -197,51 +164,198 @@ const Home: React.FC = () => {
           flex-direction: column;
           gap: 1rem;
           align-items: center;
+          animation: fadeInButtons 2s ease-out 1s backwards;
         }
         
         @media (min-width: 640px) {
-          .hero__buttons {
+          .hero-zoom__buttons {
             flex-direction: row;
             gap: 1.5rem;
           }
         }
+        
+        .hero-zoom__button {
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+        
+        .hero-zoom__button::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.2);
+          transform: translate(-50%, -50%);
+          transition: width 0.6s, height 0.6s;
+        }
+        
+        .hero-zoom__button:hover::before {
+          width: 300px;
+          height: 300px;
+        }
+        
+        .hero-zoom__button:hover {
+          transform: translateY(-3px) scale(1.05);
+          box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+        
+        .hero-zoom__button:active {
+          transform: translateY(0) scale(0.98);
+        }
+        
+        /* Main Zoom Animations */
+        @keyframes zoomContract {
+          0%, 100% {
+            letter-spacing: -1.5rem;
+            opacity: 0.3;
+            transform: translate(-50%, -50%) scale(0.5);
+          }
+          15% {
+            letter-spacing: 0;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+          }
+          50% {
+            letter-spacing: 0.1rem;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+          }
+          85% {
+            letter-spacing: 0;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+          }
+        }
+        
+        @keyframes sceneZoom {
+          0%, 100% {
+            filter: blur(20px);
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.7;
+          }
+          15% {
+            filter: blur(10px);
+            transform: translate(-50%, -50%) scale(1.1);
+            opacity: 0.9;
+          }
+          50% {
+            filter: blur(0px);
+            transform: translate(-50%, -50%) scale(1.4);
+            opacity: 1;
+          }
+          85% {
+            filter: blur(8px);
+            transform: translate(-50%, -50%) scale(1.2);
+            opacity: 0.9;
+          }
+        }
+        
+        @keyframes starshipZoom {
+          0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.5;
+          }
+          15% {
+            transform: translate(-50%, -50%) scale(1.5);
+            opacity: 0.7;
+          }
+          50% {
+            transform: translate(-50%, -50%) scale(5);
+            opacity: 1;
+          }
+          85% {
+            transform: translate(-50%, -50%) scale(2);
+            opacity: 0.8;
+          }
+        }
+        
+        @keyframes fadeInButtons {
+          0% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(30px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          .hero-zoom__title {
+            font-size: clamp(1.5rem, 8vw, 4rem);
+            white-space: normal;
+            max-width: 90%;
+          }
+        }
+        
+        /* RTL Support */
+        [dir="rtl"] .hero-zoom__title {
+          direction: rtl;
+        }
+        
+        /* Particle effect overlay */
+        .hero-zoom-wrapper::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+          z-index: 2;
+          pointer-events: none;
+        }
       `}</style>
       
-      <h1 className="hero__title">
-        {language === 'ar' ? 'أهلا في الأطيب' : 'The Future Is Already Here'}
-        <br />
-        {language === 'ar' ? 'المستقبل هنا' : 'Welcome to Elatyab'}
-      </h1>
-      
       <img 
-        src="https://design-fenix.com.ar/codepen/scroll/scene.webp" 
-        alt="Scene" 
-        className="hero__scene" 
+        src="https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7" 
+        alt="Future Scene" 
+        className="hero-zoom__scene" 
       />
       
       <img 
         src="https://design-fenix.com.ar/codepen/scroll/starship.webp" 
         alt="Starship" 
-        className="hero__starship" 
+        className="hero-zoom__starship" 
       />
       
-      <div className="hero__buttons">
+      <h1 className="hero-zoom__title">
+        {language === 'ar' ? (
+          <>
+            المستقبل هنا
+            <br />
+          الأطيب          </>
+        ) : (
+          <>
+            The Future Is
+            <br />
+            Already Here
+          </>
+        )}
+      </h1>
+      
+      <div className="hero-zoom__buttons">
         <button 
           onClick={() => navigate('/categories')} 
-          className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 backdrop-blur-md"
+          className="hero-zoom__button bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg backdrop-blur-md"
         >
           {t.categories}
         </button>
         <button 
           onClick={() => navigate('/blogs')} 
-          className="bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 shadow-xl shadow-fruit-primary/20"
+          className="hero-zoom__button bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg shadow-2xl shadow-fruit-primary/30"
         >
           {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
         </button>
       </div>
     </div>
   )
-}
+},
     {
       id: 1,
       image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=2000',
