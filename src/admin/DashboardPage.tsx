@@ -107,35 +107,6 @@ const DashboardPage: React.FC<DashboardProps> = ({ orderHistory = [], updateOrde
         }
     };
 
-    const handleSaveCategory = async (payload: any) => {
-        try {
-            if (categoryModal.item) {
-                const res = await categoryService.updateCategory(categoryModal.item.id, payload);
-                if (res.success) toast.success('تم تحديث القسم بنجاح');
-            } else {
-                const res = await categoryService.addCategory(payload);
-                if (res.success) toast.success('تم إضافة القسم بنجاح');
-            }
-            setCategoryModal({ open: false, item: null });
-            const res = await categoryService.getCategories();
-            if (res.success) setCategories(res.data);
-        } catch (err: any) {
-            toast.error('خطأ: ' + err.message);
-        }
-    };
-
-    const handleDeleteCategory = async (id: string) => {
-        if (!window.confirm('هل أنت متأكد من حذف هذا القسم؟ سيتم حذف جميع المنتجات المرتبطة به.')) return;
-        try {
-            const res = await categoryService.deleteCategory(id);
-            if (res.success) {
-                toast.success('تم حذف القسم بنجاح');
-                const resCat = await categoryService.getCategories();
-                if (resCat.success) setCategories(resCat.data);
-            }
-        } catch (err: any) {
-            toast.error('خطأ: ' + err.message);
-        }
     };
 
     const handleSaveRecipe = async (payload: any) => {
