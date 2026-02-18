@@ -96,21 +96,22 @@ const Home: React.FC = () => {
       id: 0,
       image: 'https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7',
       content: (
-        <div className="fix-12-12 flex flex-col items-center justify-center text-center">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight" style={{ fontFamily: '"Oxanium", sans-serif' }}>
-            <span className="font-black">{language === 'ar' ? 'أهلا في الأطيب' : 'Welcome to Elatyab'}</span>
+        <div className="hero" style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+          <h1 className="hero__title" style={{ fontFamily: 'Oxanium, sans-serif', fontWeight: 800, fontSize: 'clamp(2rem, 10vw, 8rem)', color: 'white', position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', zIndex: 2, fontStyle: 'normal' }}>
+            <b>{language === 'ar' ? 'أهلا في الأطيب' : 'Welcome to Elatyab'}</b>
           </h1>
-          <p className="text-white/60 text-lg md:text-2xl mb-12 max-w-2xl font-medium">
-            {language === 'ar' ? 'استمتع بأجود أنواع الفواكه والخضروات المختارة بعناية من المزارع إليك مباشرة.' : 'Enjoy the finest selection of fruits and vegetables handpicked from farms directly to you.'}
+          <img
+            src="https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7"
+            alt=""
+            className="hero__scene"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', zIndex: 1 }}
+          />
+          <p id="dev" style={{ fontFamily: 'Montserrat, sans-serif', position: 'fixed', fontSize: 14, top: 10, left: 10, padding: '1em', color: '#333', backgroundColor: 'white', borderRadius: 25, zIndex: 5 }}>
+            Developed with <span style={{ color: 'pink' }}>❤</span> by{' '}
+            <a href="https://codepen.io/designfenix/" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 'bold', color: '#333' }}>
+              Fernando Cohen
+            </a>
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-            <button onClick={() => navigate('/categories')} className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 backdrop-blur-md">
-              {t.categories}
-            </button>
-            <button onClick={() => navigate('/blogs')} className="bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 shadow-xl shadow-fruit-primary/20">
-              {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
-            </button>
-          </div>
         </div>
       )
     },
