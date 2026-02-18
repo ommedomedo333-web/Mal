@@ -8,6 +8,7 @@ import {
   Wallet,
   WalletTransaction,
   CartItemWithProduct,
+  MonthlyStats
 } from './supabase-hooks'
 import { User as SupabaseUser } from '@supabase/supabase-js'
 
@@ -63,6 +64,7 @@ export function useAuthContext() {
 interface WalletContextType {
   wallet: Wallet | null
   transactions: WalletTransaction[]
+  monthlyStats: MonthlyStats | null
   loading: boolean
   chargeWallet: (amount: number, description?: string) => Promise<any>
   processPayment: (orderId: string, amount: number, description?: string) => Promise<any>
