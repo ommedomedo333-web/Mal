@@ -122,7 +122,7 @@ const Home: React.FC = () => {
       )
     },
     {
-      id: 5,
+      id: 2,
       image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2000',
       content: (
         <div className="fix-12-12 text-center flex flex-col items-center justify-center">
@@ -136,13 +136,10 @@ const Home: React.FC = () => {
       )
     },
     {
-      id: 2,
+      id: 6,
       image: 'https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&q=80&w=2000',
       content: (
         <div className="fix-12-12 relative px-4 sm:px-0">
-          <div className="w-full flex items-center justify-center mb-4 md:mb-8 animate-pulse-slow">
-            <Buzzer />
-          </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
             <div className="ae-1">
               <div className="inline-flex items-center gap-3 bg-green-500/20 text-green-500 px-4 py-1.5 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-black mb-4 md:mb-8 border border-green-500/20">
