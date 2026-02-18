@@ -154,11 +154,11 @@ const Wallet: React.FC = () => {
               </div>
               <div className="text-right">
                 <p className="text-fruit-primary text-xs font-black uppercase tracking-[0.2em] mb-2">
-                  {language === 'ar' ? 'نقاط الولاء' : 'Loyalty Points'}
+                  {t.btsAwards}
                 </p>
                 <div className="flex items-baseline justify-end gap-2">
                   <h1 className="text-4xl font-black text-white">{wallet?.points_balance || 0}</h1>
-                  <span className="text-lg text-white/40 font-black">PTS</span>
+                  <span className="text-lg text-white/40 font-black">BTS</span>
                 </div>
               </div>
             </div>
@@ -167,7 +167,7 @@ const Wallet: React.FC = () => {
             <div className="mb-8 p-6 bg-white/5 rounded-[32px] border border-white/10">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-white/40 text-[10px] font-black uppercase tracking-widest">
-                  {language === 'ar' ? 'أرباح هذا الشهر' : 'Monthly Profit'}
+                  {language === 'ar' ? 'أرباح BTS هذا الشهر' : 'Monthly BTS Profit'}
                 </span>
                 <span className="text-fruit-primary text-[10px] font-black">
                   {new Date().toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', year: 'numeric' })}
@@ -176,7 +176,7 @@ const Wallet: React.FC = () => {
               <div className="flex items-end justify-between">
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-black text-white">+{monthlyStats?.points_earned || 0}</span>
-                  <span className="text-sm text-white/40 font-bold">PTS</span>
+                  <span className="text-sm text-white/40 font-bold">BTS</span>
                 </div>
                 <div className="w-12 h-12 bg-fruit-primary/20 rounded-2xl flex items-center justify-center border border-fruit-primary/20">
                   <Clock className="text-fruit-primary" size={24} />
@@ -189,7 +189,7 @@ const Wallet: React.FC = () => {
                 />
               </div>
               <p className="mt-2 text-[9px] text-white/20 font-bold uppercase text-center">
-                {language === 'ar' ? 'هدف الشهر: 1000 نقطة' : 'Monthly Goal: 1000 PTS'}
+                {language === 'ar' ? 'هدف الشهر: 1000 BTS' : 'Monthly Goal: 1000 BTS'}
               </p>
             </div>
 
