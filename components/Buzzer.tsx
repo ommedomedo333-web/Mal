@@ -29,11 +29,17 @@ const Buzzer: React.FC = () => {
   const velocity = useRef({ x: 0, y: 0 });
   const requestRef = useRef<number>(0);
 
-  // Check daily status
+  // Check daily status (Device & Account Level)
   useEffect(() => {
-    const lastWin = localStorage.getItem('buzzer_last_win');
     const today = new Date().toDateString();
-    if (lastWin === today) {
+
+    // 1. Check account level
+    const lastWin = localStorage.getItem('buzzer_last_win');
+
+    // 2. Check device level
+    const deviceLastWin = localStorage.getItem('device_daily_reward_date');
+
+    if (lastWin === today || deviceLastWin === today) {
       setHasWonToday(true);
     }
   }, []);
@@ -140,8 +146,19 @@ const Buzzer: React.FC = () => {
 
   const handleWin = async () => {
     const today = new Date().toDateString();
-    localStorage.setItem('buzzer_last_win', today);
+
+    // Double check to prevent race conditions
+    if (localStorage.getItem('device_daily_reward_date') === today) {
+      setHasWonToday(true);
+      toast.error(language === 'ar' ? 'لقد حصلت على المكافأة اليومية من هذا الجهاز بالفعل' : 'Reward already claimed on this device today');
+      return;
+    }
+
     setHasWonToday(true);
+    // Set immediate lock to prevent multi-tab exploits
+    localStorage.setItem('buzzer_last_win', today);
+    localStorage.setItem('device_daily_reward_date', today);
+
     velocity.current = { x: 0, y: 0 };
 
     if (user && user.id) {
