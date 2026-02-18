@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Brain, Send, Bot, User, ShoppingBasket, RefreshCw } from 'lucide-react';
 import { useAppContext } from '../contexts/AppContext';
+import { useAuthContext } from '../src/supabase/context-providers';
+import { walletService } from '../src/supabase/supabase-service';
 import { supabase } from '../src/supabase/supabase-config';
 import toast from 'react-hot-toast';
 
@@ -26,6 +28,7 @@ interface Product {
 
 const AIAssistant: React.FC = () => {
   const { language, t } = useAppContext();
+  const { user } = useAuthContext();
   const [messages, setMessages] = useState<{ role: 'user' | 'ai', content: string }[]>([
     {
       role: 'ai',
@@ -138,6 +141,22 @@ const AIAssistant: React.FC = () => {
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsTyping(true);
+
+    // Award Points for Interaction (Daily)
+    if (user?.id && messages.length === 1) {
+      const today = new Date().toDateString();
+      const lastReward = localStorage.getItem('ai_reward_last');
+      if (lastReward !== today) {
+        const rewardPts = Math.round(5 * walletService.PROFIT_MULTIPLIER);
+        walletService.addPoints(user.id, rewardPts, 'First daily AI interaction');
+        localStorage.setItem('ai_reward_last', today);
+        toast.success(language === 'ar'
+          ? `ربحت ${rewardPts} نقطة لتفاعلك مع مساعدنا الذكي! 🌿`
+          : `Earned ${rewardPts} PTS for using our AI! 🌿`,
+          { icon: '🪙', style: { borderRadius: '24px', background: '#003e31', color: '#fff', fontWeight: '900' } }
+        );
+      }
+    }
 
     try {
       const openRouterKey = import.meta.env.VITE_OPENROUTER_API_KEY;
