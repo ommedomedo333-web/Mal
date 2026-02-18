@@ -42,6 +42,7 @@ CREATE TABLE public.wallets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID UNIQUE NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
     balance DECIMAL(10,2) DEFAULT 0.00 CHECK (balance >= 0),
+    points_balance INTEGER DEFAULT 0 CHECK (points_balance >= 0),
     currency TEXT DEFAULT 'EGP',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
