@@ -50,7 +50,7 @@ const CategoryIcon = ({ icon: Icon, label, categoryId }: any) => {
 };
 
 const Home: React.FC = () => {
-  const { t, language, cart, cartTotal, removeFromCart, setLanguage, placeOrder, setUser } = useAppContext();
+  const { t, language, cart, cartTotal, removeFromCart, setLanguage, placeOrder, setUser, totalPoints } = useAppContext();
   const { user } = useAuthContext();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -404,34 +404,59 @@ const Home: React.FC = () => {
 
           <div className="flex-1 overflow-y-auto p-6">
             <div className="space-y-6">
-              <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-                <h3 className="text-white font-black text-lg mb-4">مرحباً بك في الأطيب</h3>
-                <p className="text-white/60 text-sm mb-6">قم بتسجيل الدخول أو إنشاء حساب جديد للوصول إلى جميع الميزات</p>
+              {!user ? (
+                <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                  <h3 className="text-white font-black text-lg mb-4">
+                    {language === 'ar' ? 'مرحباً بك في الأطيب' : 'Welcome to Elatyab'}
+                  </h3>
+                  <p className="text-white/60 text-sm mb-6">
+                    {language === 'ar' ? 'قم بتسجيل الدخول أو إنشاء حساب جديد للوصول إلى جميع الميزات' : 'Sign in or create a new account to access all features'}
+                  </p>
 
-                <div className="space-y-3">
-                  <button
-                    onClick={() => {
-                      navigate('/login');
-                      setSidebarOpen(false);
-                    }}
-                    className="w-full flex items-center gap-3 p-4 bg-fruit-primary hover:bg-fruit-primary/80 text-white rounded-2xl font-black transition-all"
-                  >
-                    <LogIn size={20} />
-                    تسجيل الدخول
-                  </button>
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => {
+                        navigate('/login');
+                        setSidebarOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-4 bg-fruit-primary hover:bg-fruit-primary/80 text-white rounded-2xl font-black transition-all"
+                    >
+                      <LogIn size={20} />
+                      {language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      navigate('/signup');
-                      setSidebarOpen(false);
-                    }}
-                    className="w-full flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-black transition-all border border-white/10"
-                  >
-                    <User size={20} />
-                    إنشاء حساب جديد
-                  </button>
+                    <button
+                      onClick={() => {
+                        navigate('/signup');
+                        setSidebarOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-black transition-all border border-white/10"
+                    >
+                      <User size={20} />
+                      {language === 'ar' ? 'إنشاء حساب جديد' : 'Create Account'}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="bg-fruit-primary/10 rounded-2xl p-6 border border-fruit-primary/20">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-fruit-primary rounded-xl flex items-center justify-center text-white font-black text-xl">
+                      {user.email?.[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-white font-black text-sm truncate w-40">{user.email}</p>
+                      <p className="text-fruit-primary text-[10px] font-black uppercase tracking-widest">{language === 'ar' ? 'عضو مميز' : 'Premium Member'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between bg-black/20 p-4 rounded-xl border border-white/5">
+                    <div className="flex flex-col">
+                      <span className="text-white/40 text-[10px] font-bold uppercase tracking-wider">{language === 'ar' ? 'نقاط الولاء' : 'Loyalty Points'}</span>
+                      <span className="text-white font-black text-xl">{totalPoints} <span className="text-[10px] text-fruit-primary">PTS</span></span>
+                    </div>
+                    <Star className="text-fruit-primary fill-fruit-primary" size={20} />
+                  </div>
+                </div>
+              )}
 
               <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
                 <h3 className="text-white font-black text-lg mb-4">روابط سريعة</h3>
