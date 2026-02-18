@@ -3,7 +3,6 @@ import ProgressBar from '../components/Slides/ProgressBar';
 import Slide from '../components/Slides/Slide';
 import Buzzer from '../components/Buzzer';
 import { useAppContext } from '../contexts/AppContext';
-import MazeGame from '../components/MazeGame';
 
 import { useAuthContext } from '../src/supabase/context-providers';
 
@@ -121,22 +120,25 @@ const Home: React.FC = () => {
         </div>
       )
     },
+
     {
       id: 2,
       image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2000',
       content: (
         <div className="fix-12-12 text-center flex flex-col items-center justify-center">
-          <div className="flex justify-center mb-4 ae-1">
-            <span className="px-4 py-2 bg-fruit-primary/20 text-fruit-primary text-[10px] md:text-sm font-black uppercase tracking-[0.2em] border border-fruit-primary/30 rounded-full backdrop-blur-md">
-              {language === 'ar' ? 'تحدي المتاهة • الأطيب' : 'MAZE CHALLENGE • ELATYAB'}
+          <div className="flex justify-center mb-8 ae-1">
+            <span className="px-5 py-2.5 bg-white/10 text-white text-[10px] md:text-sm font-black uppercase tracking-[0.3em] border border-white/20 rounded-full backdrop-blur-xl">
+              {language === 'ar' ? 'تحدي الأناقة • الأطيب' : 'ELATYAB • ARCADE CHALLENGE'}
             </span>
           </div>
-          <MazeGame language={language} />
+          <div className="ae-2 w-full max-w-[320px] md:max-w-[550px]">
+            <Buzzer />
+          </div>
         </div>
       )
     },
     {
-      id: 6,
+      id: 5,
       image: 'https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&q=80&w=2000',
       content: (
         <div className="fix-12-12 relative px-4 sm:px-0">
