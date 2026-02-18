@@ -62,7 +62,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [user]);
 
   const fetchWalletBalance = async () => {
+    if (!user?.id) return;
     const { data, success } = await walletService.getWallet(user.id);
+    console.log("AppContext: Fetched wallet data:", data);
     if (success && data) {
       setWalletBalance(data.balance);
       setTotalPoints(data.points_balance || 0);
