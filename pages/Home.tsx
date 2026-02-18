@@ -94,7 +94,7 @@ const Home: React.FC = () => {
   const slidesData = [
     {
   id: 0,
-  image: 'https://design-fenix.com.ar/codepen/scroll/scene.webp',
+  image: 'https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7',
   content: (
     <div className="hero-zoom-wrapper">
       <style>{`
@@ -103,24 +103,60 @@ const Home: React.FC = () => {
         * {
           padding: 0;
           margin: 0;
+          box-sizing: border-box;
         }
         
         .hero-zoom-wrapper {
           position: relative;
           height: 100vh;
+          height: 100dvh; /* Dynamic viewport height for mobile */
           width: 100%;
           overflow: hidden;
+          background: #000;
         }
         
         .hero-zoom__starship,
         .hero-zoom__scene {
           width: 100%;
           height: 100%;
-          object-fit: fill;
           position: absolute;
           left: 50%;
           top: 50%;
           transform: translate(-50%, -50%);
+        }
+        
+        /* Desktop & Tablet - use fill for full coverage */
+        @media (min-width: 769px) {
+          .hero-zoom__starship,
+          .hero-zoom__scene {
+            object-fit: fill;
+          }
+        }
+        
+        /* Mobile - use cover to maintain aspect ratio */
+        @media (max-width: 768px) {
+          .hero-zoom__starship,
+          .hero-zoom__scene {
+            object-fit: cover;
+            object-position: center;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            min-height: -webkit-fill-available;
+          }
+        }
+        
+        /* Extra small phones */
+        @media (max-width: 480px) {
+          .hero-zoom__starship,
+          .hero-zoom__scene {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            min-width: 100vw;
+            min-height: 100vh;
+            min-height: 100dvh;
+          }
         }
         
         .hero-zoom__title {
@@ -129,8 +165,7 @@ const Home: React.FC = () => {
           font-weight: 800;
           font-style: normal;
           position: absolute;
-          font-size: clamp(2rem, 10vw, 8rem);
-          white-space: nowrap;
+          font-size: clamp(1.5rem, 8vw, 8rem);
           color: white;
           left: 50%;
           top: 50%;
@@ -139,7 +174,9 @@ const Home: React.FC = () => {
           animation: zoomContract 8s ease-in-out infinite;
           mix-blend-mode: overlay;
           text-align: center;
-          line-height: 1.2;
+          line-height: 1.1;
+          white-space: nowrap;
+          padding: 0 1rem;
         }
         
         .hero-zoom__starship {
@@ -156,21 +193,24 @@ const Home: React.FC = () => {
         
         .hero-zoom__buttons {
           position: absolute;
-          bottom: 10%;
+          bottom: 8%;
           left: 50%;
           transform: translateX(-50%);
           z-index: 4;
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.75rem;
           align-items: center;
           animation: fadeInButtons 2s ease-out 1s backwards;
+          width: 90%;
+          max-width: 500px;
         }
         
         @media (min-width: 640px) {
           .hero-zoom__buttons {
             flex-direction: row;
             gap: 1.5rem;
+            width: auto;
           }
         }
         
@@ -178,6 +218,14 @@ const Home: React.FC = () => {
           position: relative;
           overflow: hidden;
           transition: all 0.3s ease;
+          width: 100%;
+          text-align: center;
+        }
+        
+        @media (min-width: 640px) {
+          .hero-zoom__button {
+            width: auto;
+          }
         }
         
         .hero-zoom__button::before {
@@ -205,6 +253,13 @@ const Home: React.FC = () => {
         
         .hero-zoom__button:active {
           transform: translateY(0) scale(0.98);
+        }
+        
+        /* Touch devices */
+        @media (hover: none) and (pointer: coarse) {
+          .hero-zoom__button:active {
+            transform: scale(0.95);
+          }
         }
         
         /* Main Zoom Animations */
@@ -284,12 +339,45 @@ const Home: React.FC = () => {
           }
         }
         
-        /* Responsive adjustments */
+        /* Mobile specific adjustments */
         @media (max-width: 768px) {
           .hero-zoom__title {
-            font-size: clamp(1.5rem, 8vw, 4rem);
+            font-size: clamp(1.2rem, 7vw, 3rem);
             white-space: normal;
+            max-width: 85%;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+          }
+          
+          .hero-zoom__buttons {
+            bottom: 5%;
+            gap: 0.6rem;
+          }
+        }
+        
+        /* Very small phones */
+        @media (max-width: 375px) {
+          .hero-zoom__title {
+            font-size: clamp(1rem, 6.5vw, 2.5rem);
             max-width: 90%;
+          }
+          
+          .hero-zoom__buttons {
+            bottom: 4%;
+          }
+        }
+        
+        /* Landscape mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+          .hero-zoom__title {
+            font-size: clamp(1rem, 5vh, 2rem);
+            top: 45%;
+          }
+          
+          .hero-zoom__buttons {
+            bottom: 3%;
+            flex-direction: row;
+            gap: 0.5rem;
           }
         }
         
@@ -298,7 +386,7 @@ const Home: React.FC = () => {
           direction: rtl;
         }
         
-        /* Particle effect overlay */
+        /* Overlay effect */
         .hero-zoom-wrapper::after {
           content: '';
           position: absolute;
@@ -310,17 +398,24 @@ const Home: React.FC = () => {
           z-index: 2;
           pointer-events: none;
         }
+        
+        /* Prevent iOS zoom on double tap */
+        .hero-zoom__button {
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+        }
       `}</style>
       
       <img 
         src="https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7" 
-        alt="Future Scene" 
-        className="hero-zoom__scene" 
+        alt="Elatyab Portal" 
+        className="hero-zoom__scene"
+        loading="eager"
       />
       
       <img 
         src="https://design-fenix.com.ar/codepen/scroll/starship.webp" 
-        alt="Starship" 
+        alt="Starship Effect" 
         className="hero-zoom__starship" 
       />
       
@@ -329,7 +424,8 @@ const Home: React.FC = () => {
           <>
             المستقبل هنا
             <br />
-          الأطيب          </>
+            الأطيب
+          </>
         ) : (
           <>
             The Future Is
@@ -342,13 +438,13 @@ const Home: React.FC = () => {
       <div className="hero-zoom__buttons">
         <button 
           onClick={() => navigate('/categories')} 
-          className="hero-zoom__button bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg backdrop-blur-md"
+          className="hero-zoom__button bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 md:px-12 py-3 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-sm md:text-lg backdrop-blur-md"
         >
           {t.categories}
         </button>
         <button 
           onClick={() => navigate('/blogs')} 
-          className="hero-zoom__button bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg shadow-2xl shadow-fruit-primary/30"
+          className="hero-zoom__button bg-fruit-primary hover:bg-fruit-primary/80 text-white px-6 md:px-12 py-3 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-sm md:text-lg shadow-2xl shadow-fruit-primary/30"
         >
           {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
         </button>
