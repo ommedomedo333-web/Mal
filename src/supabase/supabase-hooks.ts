@@ -17,7 +17,14 @@ export interface Wallet {
   id: string;
   user_id: string;
   balance: number;
+  points_balance: number;
   currency: string;
+}
+
+export interface MonthlyStats {
+  points_earned: number;
+  profit_earned: number;
+  month: string;
 }
 
 export interface WalletTransaction {
@@ -172,6 +179,7 @@ export function useUser() {
 export function useWallet() {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
+  const [monthlyStats, setMonthlyStats] = useState<MonthlyStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchWalletData = useCallback(async () => {
@@ -185,6 +193,9 @@ export function useWallet() {
         const formattedTransactions = transRes.data.map((tx: any) => ({ ...tx, wallet_id: walletRes.data.id, status: 'succeeded' }));
         setTransactions(formattedTransactions);
       }
+
+      const statsRes = await walletService.getMonthlyStats(user.id);
+      if (statsRes.success) setMonthlyStats(statsRes.data);
     }
     setLoading(false);
   }, []);
@@ -196,7 +207,7 @@ export function useWallet() {
   const chargeWallet = async (amount: number, description?: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { error: 'No user' };
-    const res = await walletService.addMoney(user.id, amount);
+    const res = await walletService.addMoney(user.id, amount, description);
     if (res.success) await fetchWalletData();
     return res;
   };
@@ -214,7 +225,7 @@ export function useWallet() {
     return { data, error };
   };
 
-  return { wallet, transactions, loading, chargeWallet, processPayment, refetch: fetchWalletData };
+  return { wallet, transactions, monthlyStats, loading, chargeWallet, processPayment, refetch: fetchWalletData };
 }
 
 // Cart Hook
