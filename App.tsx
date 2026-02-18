@@ -35,7 +35,7 @@ const App: React.FC = () => {
 
 const MainApp: React.FC = () => {
   const navigate = useNavigate();
-  const { totalPoints, setTotalPoints } = useAppContext() as any;
+  const { totalPoints, setTotalPoints, t } = useAppContext() as any;
   const [cart, setCart] = useState<any[]>(() => {
     const saved = localStorage.getItem('cybernav_cart');
     return saved ? JSON.parse(saved) : [];
@@ -72,13 +72,30 @@ const MainApp: React.FC = () => {
       {/* PWA Install Banner - This is the primary "Download App" alert */}
       <PWAInstallBanner />
 
-      {/* Floating Cart Icon */}
-      <div
-        className="fixed top-5 right-5 z-20"
-        style={{
-          animation: totalItems > 0 ? 'scalePop 0.25s ease' : 'none'
-        }}
-      >
+      {/* Floating Header Actions (Cart & BTS) */}
+      <div className="fixed top-5 right-5 z-20 flex items-center gap-3">
+        {/* BTS Points Display */}
+        <div
+          className="flex items-center gap-2 px-4 py-2 cursor-pointer transition-all active:scale-95 group"
+          onClick={() => navigate('/wallet')}
+          style={{
+            background: 'rgba(0, 77, 62, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '24px',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+            border: '1px solid rgba(255,255,255,0.1)'
+          }}
+        >
+          <div className="w-6 h-6 bg-fruit-primary rounded-full flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+            <span className="text-[10px] font-black text-white">B</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] text-white/40 font-black uppercase tracking-tighter leading-none">{t.btsAwards}</span>
+            <span className="text-sm font-black text-white leading-none">{totalPoints || 0}</span>
+          </div>
+        </div>
+
+        {/* Cart Icon */}
         <div
           className="relative cursor-pointer transition-all active:scale-95"
           onClick={() => navigate('/orders')}
@@ -87,7 +104,8 @@ const MainApp: React.FC = () => {
             padding: '12px',
             borderRadius: '50%',
             boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-            border: '1px solid rgba(255,255,255,0.1)'
+            border: '1px solid rgba(255,255,255,0.1)',
+            animation: totalItems > 0 ? 'scalePop 0.25s ease' : 'none'
           }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
