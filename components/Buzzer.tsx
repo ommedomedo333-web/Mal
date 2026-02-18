@@ -143,7 +143,7 @@ const Buzzer: React.FC = () => {
     velocity.current = { x: 0, y: 0 };
 
     if (user && user.id) {
-      const reward = Math.round(20 * walletService.PROFIT_MULTIPLIER);
+      const reward = Math.round(200 * walletService.PROFIT_MULTIPLIER);
       const res = await walletService.addMoney(user.id, reward, 'Maze Game Daily Reward');
       if (res.success) {
         toast.success(language === 'ar' ? `مبروك! ربحت ${reward} نقطة!` : `Congratulations! You earned ${reward} PTS!`, {
@@ -177,7 +177,7 @@ const Buzzer: React.FC = () => {
             {language === 'ar' ? 'للمسجلين فقط' : 'Members Only'}
           </h2>
           <p className="text-white/40 text-sm mb-8 font-medium">
-            {language === 'ar' ? `سجل دخول لتربح ${Math.round(20 * walletService.PROFIT_MULTIPLIER)} نقطة يومياً` : `Sign in to earn ${Math.round(20 * walletService.PROFIT_MULTIPLIER)} points daily`}
+            {language === 'ar' ? `سجل دخول لتربح ${Math.round(200 * walletService.PROFIT_MULTIPLIER)} نقطة يومياً` : `Sign in to earn ${Math.round(200 * walletService.PROFIT_MULTIPLIER)} points daily`}
           </p>
           <button
             onClick={() => navigate('/login')}
@@ -198,7 +198,7 @@ const Buzzer: React.FC = () => {
     >
       <div className="ae-1 text-center mb-2">
         <h3 className="text-white font-black tracking-[0.2em] text-lg md:text-2xl animate-pulse uppercase">
-          {language === 'ar' ? `ادخل المركز لتربح ${Math.round(20 * walletService.PROFIT_MULTIPLIER)} نقطة` : `ENTER CENTER FOR ${Math.round(20 * walletService.PROFIT_MULTIPLIER)} PTS`}
+          {language === 'ar' ? `ادخل المركز لتربح ${Math.round(200 * walletService.PROFIT_MULTIPLIER)} نقطة` : `ENTER CENTER FOR ${Math.round(200 * walletService.PROFIT_MULTIPLIER)} PTS`}
         </h3>
       </div>
 
@@ -260,7 +260,7 @@ const Buzzer: React.FC = () => {
         {hasWonToday && (
           <div className="absolute inset-0 bg-green-500/20 backdrop-blur-sm rounded-[50px] flex items-center justify-center pointer-events-none border-2 border-green-500/30">
             <div className="bg-green-500 text-white font-black px-8 py-3 rounded-full shadow-2xl scale-125">
-              {language === 'ar' ? `مبروك: ${Math.round(20 * walletService.PROFIT_MULTIPLIER)} نقطة ✓` : `WON: ${Math.round(20 * walletService.PROFIT_MULTIPLIER)} PTS ✓`}
+              {language === 'ar' ? `مبروك: ${Math.round(200 * walletService.PROFIT_MULTIPLIER)} نقطة ✓` : `WON: ${Math.round(200 * walletService.PROFIT_MULTIPLIER)} PTS ✓`}
             </div>
           </div>
         )}
