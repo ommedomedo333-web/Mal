@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعداد Admin - Cybernav Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .problem {
+            background: #fee;
+            border-left: 4px solid #f44;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        .problem h2 {
+            color: #c33;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        .solution {
+            background: #efe;
+            border-left: 4px solid #4c4;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .solution h2 {
+            color: #2a2;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .step {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-right: 3px solid #667eea;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        ul {
+            margin-right: 20px;
+            margin-top: 10px;
+        }
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 دليل الإعداد السريع</h1>
+        <p class="subtitle">حل مشاكل تسجيل الدخول والـ API</p>
+
+        <!-- Problem 1 -->
+        <div class="problem">
+            <h2>❌ المشكلة 1: Invalid API Key</h2>
+            <p>المساعد الذكي لا يعمل ويظهر خطأ "Invalid API key"</p>
+        </div>
+
+        <div class="solution">
+            <h2>✅ الحل: تحديث مفتاح API</h2>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>افتح ملف <code>.env.local</code></strong>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>احصل على مفتاح جديد من OpenRouter:</strong>
+                <br><br>
+                <a href="https://openrouter.ai/keys" target="_blank" class="btn">🔑 احصل على مفتاح مجاني</a>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>استبدل المفتاح القديم:</strong>
+                <div class="code-block">NEXT_PUBLIC_OPENROUTER_API_KEY=sk-or-v1-YOUR-NEW-KEY-HERE</div>
+            </div>
+
+            <div class="warning">
+                <strong>💡 بديل:</strong> احذف ملف <code>.env.local</code> تماماً لاستخدام Google Gemini فقط (المفتاح موجود بالفعل)
+            </div>
+        </div>
+
+        <!-- Problem 2 -->
+        <div class="problem">
+            <h2>❌ المشكلة 2: لا يمكن تسجيل الدخول</h2>
+            <p>لا يعمل تسجيل الدخول بـ admin@gmail.com والباسورد 123456</p>
+        </div>
+
+        <div class="solution">
+            <h2>✅ الحل: إنشاء المستخدم في Supabase</h2>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>افتح Supabase Dashboard:</strong>
+                <br><br>
+                <a href="https://supabase.com/dashboard/project/qjzpjleztbqauxxjvnqr" target="_blank" class="btn">📊 فتح Dashboard</a>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>اذهب إلى:</strong> Authentication → Users
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>اضغط "Add User" وأدخل:</strong>
+                <ul>
+                    <li>Email: <code>admin@gmail.com</code></li>
+                    <li>Password: <code>123456</code></li>
+                    <li>✅ تأكد من تفعيل: <strong>Auto Confirm User</strong></li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>نفذ SQL Script للإعداد:</strong>
+                <br><br>
+                <p>اذهب إلى: SQL Editor في Supabase ونفذ الملف:</p>
+                <code>src/supabase/quick-admin-setup.sql</code>
+            </div>
+        </div>
+
+        <!-- Problem 3 -->
+        <div class="problem">
+            <h2>⚠️ تحذير: مفتاح Supabase غير كامل</h2>
+            <p>المفتاح في ملف <code>.env</code> يحتوي على X-X-X</p>
+        </div>
+
+        <div class="solution">
+            <h2>✅ الحل: تحديث مفتاح Supabase</h2>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>افتح إعدادات API:</strong>
+                <br><br>
+                <a href="https://supabase.com/dashboard/project/qjzpjleztbqauxxjvnqr/settings/api" target="_blank" class="btn">⚙️ إعدادات API</a>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>انسخ "anon public" key الكامل</strong>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>استبدله في ملف <code>.env</code>:</strong>
+                <div class="code-block">VITE_SUPABASE_ANON_KEY=eyJhbGciOi...الكود_الكامل_هنا</div>
+            </div>
+        </div>
+
+        <!-- Testing -->
+        <div class="solution">
+            <h2>🧪 اختبار الإعداد</h2>
+            
+            <div class="step">
+                <strong>بعد تطبيق الحلول أعلاه:</strong>
+                <div class="code-block">npm run build
+npm run preview</div>
+            </div>
+
+            <div class="step">
+                <strong>اختبر تسجيل الدخول:</strong>
+                <br><br>
+                <a href="http://localhost:4176/#/login" target="_blank" class="btn">🔐 صفحة تسجيل الدخول</a>
+            </div>
+
+            <div class="step">
+                <strong>اختبر المساعد الذكي:</strong>
+                <br><br>
+                <a href="http://localhost:4176/#/ai-assistant" target="_blank" class="btn">🤖 المساعد الذكي</a>
+            </div>
+
+            <div class="step">
+                <strong>افتح لوحة التحكم:</strong>
+                <br><br>
+                <a href="http://localhost:4176/#/admin" target="_blank" class="btn">🎛️ Admin Dashboard</a>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>📝 ملاحظة:</strong> إذا كنت لا تريد تسجيل الدخول، يمكنك الوصول لـ <code>/admin</code> مباشرة (Guest Mode مفعّل حالياً)
+        </div>
+    </div>
+</body>
+</html>

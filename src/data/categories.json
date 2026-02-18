@@ -1,0 +1,136 @@
+{
+  "categories": [
+    {
+      "id": "مكسرات & ياميش",
+      "name_en": "Nuts & Dried Fruits",
+      "name_ar": "مكسرات & ياميش",
+      "description_en": "Premium nuts and dried fruits.",
+      "description_ar": "مكسرات وياميش فاخرة من أفضل المصادر",
+      "icon": "🥜",
+      "color": "bg-amber-800",
+      "display_order": 1,
+      "is_active": true
+    },
+    {
+      "id": "خضروات",
+      "name_en": "Vegetables",
+      "name_ar": "خضروات",
+      "description_en": "Fresh daily vegetables.",
+      "description_ar": "خضروات طازجة يومياً",
+      "icon": "🥦",
+      "color": "bg-green-600",
+      "display_order": 2,
+      "is_active": true
+    },
+    {
+      "id": "فواكه",
+      "name_en": "Fruits",
+      "name_ar": "فواكه",
+      "description_en": "Fresh and imported fruits.",
+      "description_ar": "فواكه طازجة ومستوردة من أجود الأصناف",
+      "icon": "🍎",
+      "color": "bg-red-500",
+      "display_order": 3,
+      "is_active": true
+    },
+    {
+      "id": "تمور",
+      "name_en": "Dates",
+      "name_ar": "تمور",
+      "description_en": "Premium dates.",
+      "description_ar": "تمور سعودية ومصرية وعراقية فاخرة",
+      "icon": "🌴",
+      "color": "bg-yellow-900",
+      "display_order": 4,
+      "is_active": true
+    },
+    {
+      "id": "زيوت & عسل",
+      "name_en": "Oils & Honey",
+      "name_ar": "زيوت & عسل",
+      "description_en": "Natural oils and pure honey.",
+      "description_ar": "زيوت طبيعية وعسل نقي",
+      "icon": "🍯",
+      "color": "bg-yellow-600",
+      "display_order": 5,
+      "is_active": true
+    },
+    {
+      "id": "ورقيات",
+      "name_en": "Leafy Greens",
+      "name_ar": "ورقيات",
+      "description_en": "Fresh leafy greens.",
+      "description_ar": "خضروات ورقية طازجة",
+      "icon": "🥬",
+      "color": "bg-emerald-600",
+      "display_order": 6,
+      "is_active": true
+    },
+    {
+      "id": "مجمدات",
+      "name_en": "Frozen",
+      "name_ar": "مجمدات",
+      "description_en": "High quality frozen products.",
+      "description_ar": "منتجات مجمدة عالية الجودة",
+      "icon": "❄️",
+      "color": "bg-blue-400",
+      "display_order": 7,
+      "is_active": true
+    },
+    {
+      "id": "البان",
+      "name_en": "Dairy",
+      "name_ar": "البان",
+      "description_en": "Fresh dairy products.",
+      "description_ar": "منتجات ألبان طازجة",
+      "icon": "🥛",
+      "color": "bg-blue-100",
+      "display_order": 8,
+      "is_active": true
+    },
+    {
+      "id": "عصير",
+      "name_en": "Juices",
+      "name_ar": "عصير",
+      "description_en": "Natural juices.",
+      "description_ar": "عصائر طبيعية ومركزة",
+      "icon": "🧃",
+      "color": "bg-orange-400",
+      "display_order": 9,
+      "is_active": true
+    },
+    {
+      "id": "فواكه مجففه",
+      "name_en": "Dried Fruits",
+      "name_ar": "فواكه مجففه",
+      "description_en": "Natural dried fruits.",
+      "description_ar": "فواكه مجففة طبيعية",
+      "icon": "🍒",
+      "color": "bg-red-800",
+      "display_order": 10,
+      "is_active": true
+    },
+    {
+      "id": "فريش",
+      "name_en": "Fresh",
+      "name_ar": "فريش",
+      "description_en": "Ready to eat fresh products.",
+      "description_ar": "منتجات فريش وجاهزة",
+      "icon": "🥗",
+      "color": "bg-green-400",
+      "display_order": 11,
+      "is_active": true
+    },
+    {
+      "id": "اخرى",
+      "name_en": "Others",
+      "name_ar": "اخرى",
+      "description_en": "Various other products.",
+      "description_ar": "منتجات متنوعة أخرى",
+      "icon": "🛒",
+      "color": "bg-gray-500",
+      "display_order": 12,
+      "is_active": true
+    }
+  ]
+}

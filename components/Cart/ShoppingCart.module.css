@@ -1,0 +1,23 @@
+.shopping-cart {
+  position: fixed;
+  right: 0;
+  top: 100px;
+  width: 300px;
+  height: calc(100% - 100px);
+  background-color: #fff;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(100%);
+}
+
+.shopping-cart.open {
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .shopping-cart {
+    width: 100%;
+    height: auto;
+    top: 70px;
+  }
+}

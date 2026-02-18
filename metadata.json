@@ -1,0 +1,9 @@
+
+{
+  "name": "CyberNav Hub",
+  "description": "A high-fidelity React application featuring a futuristic cyberpunk login experience and a fluid, animated bottom navigation system.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

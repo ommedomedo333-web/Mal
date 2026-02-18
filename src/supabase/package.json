@@ -1,0 +1,23 @@
+{
+  "name": "ecommerce-supabase-integration",
+  "version": "1.0.0",
+  "description": "Complete Supabase integration for E-commerce React Native app",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "@react-native-async-storage/async-storage": "^1.21.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Run test queries\"",
+    "setup": "echo \"Follow SETUP-GUIDE.md for complete setup instructions\""
+  },
+  "keywords": [
+    "supabase",
+    "react-native",
+    "ecommerce",
+    "backend",
+    "database"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

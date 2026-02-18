@@ -1,0 +1,238 @@
+/* Top Panel Navigation */
+.panel.top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 40px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.panel.top:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.sections {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sections.desktop {
+  display: flex;
+}
+
+.sections.compact {
+  display: none;
+}
+
+.sections .left,
+.sections .center,
+.sections .right {
+  display: flex;
+  align-items: center;
+}
+
+.sections .left svg {
+  fill: #fff;
+}
+
+/* Menu */
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.menu.uppercase li a {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.menu li a {
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 5px 0;
+}
+
+.menu li a:hover {
+  opacity: 0.7;
+}
+
+.menu li a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #fff;
+  transition: width 0.3s ease;
+}
+
+.menu li a:hover::after {
+  width: 100%;
+}
+
+.menu.trim {
+  gap: 20px;
+}
+
+.menu.trim li a svg {
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+  transition: all 0.3s ease;
+}
+
+.menu.trim li a:hover svg {
+  fill: #2196F3;
+  transform: translateY(-2px);
+}
+
+/* Sidebar Trigger */
+.sidebarTrigger {
+  background: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebarTrigger svg {
+  width: 24px;
+  height: 24px;
+  fill: #fff;
+}
+
+/* Side Navigation Dots */
+.side.pole {
+  position: fixed;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 900;
+}
+
+.side .navigation ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side .navigation li {
+  margin: 15px 0;
+  position: relative;
+}
+
+.side .navigation li span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.side .navigation li:hover span {
+  background: rgba(255, 255, 255, 0.7);
+  transform: scale(1.3);
+}
+
+.side .navigation li.active span {
+  background: #fff;
+  transform: scale(1.5);
+}
+
+.side .navigation li.active::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
+}
+
+/* Responsive Navigation */
+@media (max-width: 1024px) {
+  .panel.top {
+    padding: 15px 30px;
+  }
+
+  .menu {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sections.desktop {
+    display: none;
+  }
+
+  .sections.compact {
+    display: flex;
+  }
+
+  .sections.compact.hidden {
+    display: flex;
+  }
+
+  .panel.top {
+    padding: 15px 20px;
+  }
+
+  .side.pole {
+    right: 20px;
+  }
+
+  .side .navigation li {
+    margin: 12px 0;
+  }
+}
+
+@media (max-width: 436px) {
+  .panel.top {
+    padding: 12px 15px;
+  }
+
+  .side.pole {
+    right: 15px;
+  }
+
+  .side .navigation li span {
+    width: 6px;
+    height: 6px;
+  }
+
+  .side .navigation li.active::before {
+    width: 14px;
+    height: 14px;
+    left: -4px;
+    top: -4px;
+  }
+}

@@ -1,0 +1,337 @@
+/* Slide Container */
+.slides-container {
+  position: relative;
+  width: 100%;
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+/* Individual Slide */
+.slide {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+
+/* Background */
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+/* Ken Burns Effect */
+.kenBurns .background {
+  animation: kenBurnsEffect 20s ease-in-out infinite alternate;
+}
+
+@keyframes kenBurnsEffect {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+/* Fade Overlay */
+.fade-6 .background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%);
+  z-index: 2;
+}
+
+/* Content Layer */
+.slide .content {
+  position: relative;
+  z-index: 10;
+}
+
+/* Animation Elements */
+.ae-1 {
+  animation: fadeInUp 0.8s ease-out 0.15s both;
+}
+
+.ae-2 {
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.ae-3 {
+  animation: fadeInUp 0.8s ease-out 0.45s both;
+}
+
+.ae-4 {
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.ae-5 {
+  animation: fadeInUp 0.8s ease-out 0.75s both;
+}
+
+.ae-6 {
+  animation: fadeInUp 0.8s ease-out 0.9s both;
+}
+
+.ae-7 {
+  animation: fadeInUp 0.8s ease-out 1.05s both;
+}
+
+.ae-8 {
+  animation: fadeInUp 0.8s ease-out 1.2s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* From Center Animation */
+.fromCenter {
+  animation: fadeInScale 0.8s ease-out both;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* From Left Animation */
+.fromLeft {
+  animation: slideInFromLeft 1s ease-out both;
+}
+
+.toRight .ae-1,
+.toRight .ae-2,
+.toRight .ae-3 {
+  animation: slideInFromLeft 0.8s ease-out both;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* From Right Animation */
+.fromRight {
+  animation: slideInFromRight 1s ease-out both;
+}
+
+.toLeft .ae-1,
+.toLeft .ae-2,
+.toLeft .ae-3 {
+  animation: slideInFromRight 0.8s ease-out both;
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* From Bottom Left */
+.fromBottomLeft {
+  animation: slideInFromBottomLeft 1s ease-out both;
+}
+
+@keyframes slideInFromBottomLeft {
+  from {
+    opacity: 0;
+    transform: translate(-30px, 30px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+/* Video Thumbnail */
+.videoThumbnail {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.videoThumbnail:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+}
+
+.videoThumbnail img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.videoThumbnail:hover img {
+  transform: scale(1.05);
+}
+
+.videoThumbnail .play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.videoThumbnail:hover .play-icon {
+  background: #fff;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.videoThumbnail .play-icon svg {
+  width: 24px;
+  height: 24px;
+  margin-left: 4px;
+}
+
+/* Pricing */
+.price {
+  font-size: 4rem;
+  font-weight: 300;
+  margin: 20px 0;
+  color: #202020;
+}
+
+.price .currency {
+  font-size: 2rem;
+  vertical-align: super;
+  margin-right: 5px;
+}
+
+.pad {
+  padding: 40px 30px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.pad:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.grid.equal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.equalElement {
+  min-height: 150px;
+}
+
+.equalElement ul {
+  list-style: none;
+}
+
+.equalElement ul li {
+  padding: 8px 0;
+  line-height: 1.6;
+}
+
+/* App Store Buttons */
+.app-store-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.app-store-buttons .button.hollow {
+  padding: 5px 15px;
+  margin: 0;
+}
+
+.app-store-buttons img {
+  display: block;
+}
+
+/* Responsive Slides */
+@media (max-width: 1024px) {
+  .col-tablet-1-2 {
+    width: calc(50% - 10px);
+  }
+}
+
+@media (max-width: 768px) {
+  .col-phablet-1-1 {
+    width: 100%;
+  }
+
+  .price {
+    font-size: 3rem;
+  }
+
+  .pad {
+    padding: 30px 20px;
+  }
+
+  .videoThumbnail .play-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .videoThumbnail .play-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 436px) {
+  .price {
+    font-size: 2.5rem;
+  }
+
+  .price .currency {
+    font-size: 1.5rem;
+  }
+}

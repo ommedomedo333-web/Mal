@@ -1,0 +1,152 @@
+{
+    "store": "CyberNav Hub",
+    "categories": [
+        {
+            "id": 1,
+            "name_ar": "مكسرات & ياميش",
+            "name_en": "Nuts & Dried Fruits",
+            "icon_name": "🥜",
+            "description_ar": "مكسرات وياميش فاخرة من أفضل المصادر",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 1,
+            "is_active": true
+        },
+        {
+            "id": 2,
+            "name_ar": "خضروات",
+            "name_en": "Vegetables",
+            "icon_name": "🥦",
+            "description_ar": "خضروات طازجة يومياً",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 2,
+            "is_active": true
+        },
+        {
+            "id": 3,
+            "name_ar": "فواكه",
+            "name_en": "Fruits",
+            "icon_name": "🍎",
+            "description_ar": "فواكه طازجة ومستوردة من أجود الأصناف",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 3,
+            "is_active": true
+        },
+        {
+            "id": 4,
+            "name_ar": "تمور",
+            "name_en": "Dates",
+            "icon_name": "🌴",
+            "description_ar": "تمور سعودية ومصرية وعراقية فاخرة",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 4,
+            "is_active": true
+        },
+        {
+            "id": 5,
+            "name_ar": "زيوت & عسل",
+            "name_en": "Oils & Honey",
+            "icon_name": "🍯",
+            "description_ar": "زيوت طبيعية وعسل نقي",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 5,
+            "is_active": true
+        },
+        {
+            "id": 6,
+            "name_ar": "ورقيات",
+            "name_en": "Leafy Greens",
+            "icon_name": "🥬",
+            "description_ar": "خضروات ورقية طازجة",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 6,
+            "is_active": true
+        },
+        {
+            "id": 7,
+            "name_ar": "مجمدات",
+            "name_en": "Frozen",
+            "icon_name": "❄️",
+            "description_ar": "منتجات مجمدة عالية الجودة",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 7,
+            "is_active": true
+        },
+        {
+            "id": 8,
+            "name_ar": "ألبان",
+            "name_en": "Dairy",
+            "icon_name": "🥛",
+            "description_ar": "منتجات ألبان طازجة",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 8,
+            "is_active": true
+        },
+        {
+            "id": 9,
+            "name_ar": "عصير",
+            "name_en": "Juices",
+            "icon_name": "🧃",
+            "description_ar": "عصائر طبيعية ومركزة",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 9,
+            "is_active": true
+        },
+        {
+            "id": 10,
+            "name_ar": "فواكه مجففة",
+            "name_en": "Dried Fruits",
+            "icon_name": "🍒",
+            "description_ar": "فواكه مجففة طبيعية",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 10,
+            "is_active": true
+        },
+        {
+            "id": 11,
+            "name_ar": "فريش",
+            "name_en": "Fresh",
+            "icon_name": "🥗",
+            "description_ar": "منتجات فريش وجاهزة",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 11,
+            "is_active": true
+        },
+        {
+            "id": 12,
+            "name_ar": "أخرى",
+            "name_en": "Others",
+            "icon_name": "🛒",
+            "description_ar": "منتجات متنوعة أخرى",
+            "color": "#003e31",
+            "accent": "#db6a28",
+            "dark": "#001a14",
+            "display_order": 12,
+            "is_active": true
+        }
+    ],
+    "total_categories": 12,
+    "total_products": 168,
+    "generated_at": "2026-02-15"
+}

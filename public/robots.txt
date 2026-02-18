@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ommedomedo333-web.github.io/cybernav-hub/sitemap.xml

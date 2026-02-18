@@ -1,0 +1,36 @@
+/* Progress Bar */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  z-index: 2001;
+  transition: width 0.1s ease-out;
+  pointer-events: none;
+}
+
+.progress-bar.blue {
+  background: linear-gradient(90deg, #2196F3 0%, #1976D2 100%);
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+}
+
+/* Animation for progress bar */
+@keyframes progressGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.8);
+  }
+}
+
+.progress-bar.blue {
+  animation: progressGlow 2s ease-in-out infinite;
+}
+
+/* Responsive Progress Bar */
+@media (max-width: 768px) {
+  .progress-bar {
+    height: 2px;
+  }
+}
