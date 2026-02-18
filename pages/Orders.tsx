@@ -16,7 +16,7 @@ const OrdersScreen: React.FC<{
   orderHistory?: any[];
   setOrderHistory?: any;
 }> = ({ cart = [], setCart, orderHistory = [], setOrderHistory }) => {
-  const { totalPoints, setTotalPoints, user } = useAppContext() as any;
+  const { totalPoints, setTotalPoints, user, language, t } = useAppContext() as any;
   const [pMethod, setPMethod] = useState('cash');
   const [isSuccess, setIsSuccess] = useState(false);
   const [orderNum, setOrderNum] = useState('');
@@ -303,7 +303,9 @@ const OrdersScreen: React.FC<{
               <span style={{ fontWeight: 700 }}>{deliveryFee.toFixed(2)} ج.م</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-              <span style={{ color: '#db6a28', fontSize: 13, fontWeight: 800 }}>سوف تربح (BTS)</span>
+              <span style={{ color: '#db6a28', fontSize: 13, fontWeight: 800 }}>
+                {language === 'ar' ? 'سوف تربح' : 'You will earn'} ({t.btsAwards})
+              </span>
               <span style={{ color: '#db6a28', fontWeight: 900 }}>+{(cartTotal * 1.5).toFixed(0)} BTS</span>
             </div>
             <div style={{ height: 1, background: '#222', margin: '15px 0' }} />
