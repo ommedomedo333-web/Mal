@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 const Wallet: React.FC = () => {
   const { t, language } = useAppContext();
   const { user } = useAuthContext();
-  const { wallet, transactions, loading, chargeWallet, refetch } = useWalletContext();
+  const { wallet, transactions, monthlyStats, loading, chargeWallet, refetch } = useWalletContext();
   const [amount, setAmount] = useState<number>(100);
   const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
@@ -152,9 +152,45 @@ const Wallet: React.FC = () => {
                   <span className="text-xl text-fruit-primary font-black">{t.egp}</span>
                 </div>
               </div>
-              <div className="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center border border-white/10">
-                <WalletIcon className="text-fruit-primary" size={32} />
+              <div className="text-right">
+                <p className="text-fruit-primary text-xs font-black uppercase tracking-[0.2em] mb-2">
+                  {language === 'ar' ? 'نقاط الولاء' : 'Loyalty Points'}
+                </p>
+                <div className="flex items-baseline justify-end gap-2">
+                  <h1 className="text-4xl font-black text-white">{wallet?.points_balance || 0}</h1>
+                  <span className="text-lg text-white/40 font-black">PTS</span>
+                </div>
               </div>
+            </div>
+
+            {/* Monthly Profit Section */}
+            <div className="mb-8 p-6 bg-white/5 rounded-[32px] border border-white/10">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white/40 text-[10px] font-black uppercase tracking-widest">
+                  {language === 'ar' ? 'أرباح هذا الشهر' : 'Monthly Profit'}
+                </span>
+                <span className="text-fruit-primary text-[10px] font-black">
+                  {new Date().toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', year: 'numeric' })}
+                </span>
+              </div>
+              <div className="flex items-end justify-between">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-black text-white">+{monthlyStats?.points_earned || 0}</span>
+                  <span className="text-sm text-white/40 font-bold">PTS</span>
+                </div>
+                <div className="w-12 h-12 bg-fruit-primary/20 rounded-2xl flex items-center justify-center border border-fruit-primary/20">
+                  <Clock className="text-fruit-primary" size={24} />
+                </div>
+              </div>
+              <div className="mt-4 w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-fruit-primary shadow-[0_0_10px_rgba(255,26,125,0.5)] transition-all duration-1000"
+                  style={{ width: `${Math.min(((monthlyStats?.points_earned || 0) / 1000) * 100, 100)}%` }}
+                />
+              </div>
+              <p className="mt-2 text-[9px] text-white/20 font-bold uppercase text-center">
+                {language === 'ar' ? 'هدف الشهر: 1000 نقطة' : 'Monthly Goal: 1000 PTS'}
+              </p>
             </div>
 
             <div className="grid grid-cols-1 gap-6">
