@@ -201,9 +201,81 @@ export const cartService = {
 };
 
 export const walletService = {
-  getWallet: async (userId) => ({ success: true, data: { balance: 150.00 } }),
-  addMoney: async (userId, amount) => ({ success: true }),
-  getTransactions: async (userId) => ({ success: true, data: [] })
+  getWallet: async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('wallets')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error && error.code === 'PGRST116') {
+        // Wallet doesn't exist, create one
+        const { data: newWallet, error: createError } = await supabase
+          .from('wallets')
+          .insert([{ user_id: userId, balance: 0 }])
+          .select()
+          .single();
+        if (createError) throw createError;
+        return { success: true, data: newWallet };
+      }
+
+      if (error) throw error;
+      return { success: true, data };
+    } catch (e) {
+      console.error("Wallet error:", e);
+      return { success: false, error: e.message };
+    }
+  },
+  addMoney: async (userId, amount, description = 'Recharge') => {
+    try {
+      // 1. Get or create wallet
+      const walletRes = await walletService.getWallet(userId);
+      if (!walletRes.success) throw new Error(walletRes.error);
+      const wallet = walletRes.data;
+
+      // 2. Update balance
+      const newBalance = parseFloat(wallet.balance) + parseFloat(amount);
+      const { data: updatedWallet, error: updateError } = await supabase
+        .from('wallets')
+        .update({ balance: newBalance, updated_at: new Date() })
+        .eq('id', wallet.id)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
+
+      // 3. Record transaction
+      await supabase
+        .from('wallet_transactions')
+        .insert([{
+          wallet_id: wallet.id,
+          transaction_type: 'charge',
+          amount: amount,
+          status: 'completed',
+          description: description
+        }]);
+
+      return { success: true, data: updatedWallet };
+    } catch (e) {
+      console.error("Add money error:", e);
+      return { success: false, error: e.message };
+    }
+  },
+  getTransactions: async (userId) => {
+    try {
+      const walletRes = await walletService.getWallet(userId);
+      if (!walletRes.success) return { success: true, data: [] };
+
+      const { data, error } = await supabase
+        .from('wallet_transactions')
+        .select('*')
+        .eq('wallet_id', walletRes.data.id)
+        .order('created_at', { ascending: false });
+
+      return { success: !error, data: data || [] };
+    } catch (e) { return { success: true, data: [] }; }
+  }
 };
 
 export const orderService = {
