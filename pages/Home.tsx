@@ -3,6 +3,7 @@ import ProgressBar from '../components/Slides/ProgressBar';
 import Slide from '../components/Slides/Slide';
 import Buzzer from '../components/Buzzer';
 import { useAppContext } from '../contexts/AppContext';
+import MazeGame from '../components/MazeGame';
 
 import { useAuthContext } from '../src/supabase/context-providers';
 
@@ -102,39 +103,53 @@ const Home: React.FC = () => {
               {language === 'ar' ? 'طبيعي 100% • طازج يومياً' : '100% NATURAL • FRESH DAILY'}
             </span>
           </div>
-          <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter ae-2 mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-black tracking-tighter ae-2 mb-6 leading-tight">
             {language === 'ar' ? 'سوق الفواكه ' : 'ELATYAB '}
             <span className="text-fruit-primary">{language === 'ar' ? 'الأطيب' : 'MARKET'}</span>
           </h1>
           <p className="ae-3 mb-8 md:mb-12 text-base md:text-2xl text-white/60 max-w-3xl mx-auto font-medium leading-relaxed">
             {language === 'ar' ? 'استمتع بأجود أنواع الفواكه والخضروات المختارة بعناية من المزارع إليك مباشرة مع خدمة التوصيل السريع.' : 'Enjoy the finest selection of fruits and vegetables, handpicked from farms directly to your doorstep with express delivery.'}
           </p>
-          <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 ae-4">
-            <button onClick={() => navigate('/categories')} className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-4 md:py-5 rounded-[20px] md:rounded-[24px] font-black text-lg md:text-xl transition-all active:scale-95 backdrop-blur-md">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-6 ae-4">
+            <button onClick={() => navigate('/categories')} className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-xl transition-all active:scale-95 backdrop-blur-md">
               {t.categories}
+            </button>
+            <button onClick={() => navigate('/blogs')} className="w-full sm:w-auto bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-xl transition-all active:scale-95 shadow-xl shadow-fruit-primary/20">
+              {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
             </button>
           </div>
         </div>
       )
     },
-
-   
-
+    {
+      id: 5,
+      image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2000',
+      content: (
+        <div className="fix-12-12 text-center flex flex-col items-center justify-center">
+          <div className="flex justify-center mb-4 ae-1">
+            <span className="px-4 py-2 bg-fruit-primary/20 text-fruit-primary text-[10px] md:text-sm font-black uppercase tracking-[0.2em] border border-fruit-primary/30 rounded-full backdrop-blur-md">
+              {language === 'ar' ? 'تحدي المتاهة • الأطيب' : 'MAZE CHALLENGE • ELATYAB'}
+            </span>
+          </div>
+          <MazeGame language={language} />
+        </div>
+      )
+    },
     {
       id: 2,
       image: 'https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&q=80&w=2000',
       content: (
-        <div className="fix-12-12 relative">
-          <div className="w-full flex items-center justify-center mb-8">
+        <div className="fix-12-12 relative px-4 sm:px-0">
+          <div className="w-full flex items-center justify-center mb-4 md:mb-8 animate-pulse-slow">
             <Buzzer />
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
             <div className="ae-1">
-              <div className="inline-flex items-center gap-3 bg-green-500/20 text-green-500 px-6 py-2 rounded-full text-sm font-black mb-8 border border-green-500/20">
-                <ShieldCheck size={20} />
+              <div className="inline-flex items-center gap-3 bg-green-500/20 text-green-500 px-4 py-1.5 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-black mb-4 md:mb-8 border border-green-500/20">
+                <ShieldCheck size={18} />
                 <span>{t.freshness}</span>
               </div>
-              <h2 className="text-6xl font-black text-white mb-8 leading-tight">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 md:mb-8 leading-tight">
                 {language === 'ar' ? 'من المزرعة إلى مائدتك في ' : 'From Farm to Table in '}
                 <span className="text-fruit-primary">{language === 'ar' ? '6 ساعات' : '6 Hours'}</span>
               </h2>
@@ -174,50 +189,48 @@ const Home: React.FC = () => {
       id: 3,
       image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=2000',
       content: (
-        <div className="fix-12-12 text-center">
-          <div className="w-28 h-28 bg-fruit-primary/20 rounded-[40px] flex items-center justify-center mx-auto mb-10 ae-1 shadow-2xl">
-            <Leaf size={56} className="text-fruit-primary" />
+        <div className="fix-12-12 text-center px-4 md:px-0">
+          <div className="w-16 h-16 md:w-28 md:h-28 bg-fruit-primary/20 rounded-[20px] md:rounded-[40px] flex items-center justify-center mx-auto mb-6 md:mb-10 ae-1 shadow-2xl">
+            <Leaf size={32} className="text-fruit-primary md:hidden" />
+            <Leaf size={56} className="text-fruit-primary hidden md:block" />
           </div>
-          <h2 className="text-6xl font-black text-white mb-8 ae-2 tracking-tight">{t.sustainability}</h2>
-          <p className="text-2xl text-white/50 max-w-4xl mx-auto mb-16 ae-3 leading-relaxed font-medium">
+          <h2 className="text-3xl md:text-6xl font-black text-white mb-4 md:mb-8 ae-2 tracking-tight">{t.sustainability}</h2>
+          <p className="text-base md:text-2xl text-white/50 max-w-4xl mx-auto mb-8 md:mb-16 ae-3 leading-relaxed font-medium">
             {language === 'ar' ? 'نحن نلتزم بتقليل البصمة الكربونية من خلال التغليف الصديق للبيئة ودعم المزارعين المحليين.' : 'We are committed to reducing carbon footprint through eco-friendly packaging and supporting local farmers.'}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 ae-4">
-            <div className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-md">
-              <p className="text-5xl font-black text-fruit-primary mb-3">500+ kg</p>
-              <p className="text-white/30 font-black uppercase tracking-widest text-sm">{language === 'ar' ? 'بلاستيك تم توفيره' : 'Plastic Saved'}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 ae-4">
+            <div className="bg-white/5 p-6 md:p-10 rounded-[32px] md:rounded-[48px] border border-white/10 backdrop-blur-md">
+              <p className="text-3xl md:text-5xl font-black text-fruit-primary mb-2 md:mb-3">500+ kg</p>
+              <p className="text-white/30 font-black uppercase tracking-widest text-[10px] md:text-sm">{language === 'ar' ? 'بلاستيك تم توفيره' : 'Plastic Saved'}</p>
             </div>
-            <div className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-md">
-              <p className="text-5xl font-black text-fruit-accent mb-3">1200+</p>
-              <p className="text-white/30 font-black uppercase tracking-widest text-sm">{language === 'ar' ? 'شجرة تم غرسها' : 'Trees Planted'}</p>
+            <div className="bg-white/5 p-6 md:p-10 rounded-[32px] md:rounded-[48px] border border-white/10 backdrop-blur-md">
+              <p className="text-3xl md:text-5xl font-black text-fruit-accent mb-2 md:mb-3">1200+</p>
+              <p className="text-white/30 font-black uppercase tracking-widest text-[10px] md:text-sm">{language === 'ar' ? 'شجرة تم غرسها' : 'Trees Planted'}</p>
             </div>
-            <div className="bg-white/5 p-10 rounded-[48px] border border-white/10 backdrop-blur-md">
-              <p className="text-5xl font-black text-fruit-orange mb-3">100%</p>
-              <p className="text-white/30 font-black uppercase tracking-widest text-sm">{language === 'ar' ? 'تغليف قابل للتحلل' : 'Biodegradable'}</p>
+            <div className="bg-white/5 p-6 md:p-10 rounded-[32px] md:rounded-[48px] border border-white/10 backdrop-blur-md">
+              <p className="text-3xl md:text-5xl font-black text-fruit-orange mb-2 md:mb-3">100%</p>
+              <p className="text-white/30 font-black uppercase tracking-widest text-[10px] md:text-sm">{language === 'ar' ? 'تغليف قابل للتحلل' : 'Biodegradable'}</p>
             </div>
           </div>
         </div>
       )
     },
-
-
-
     {
       id: 4,
       image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=2000',
       content: (
-        <div className="fix-12-12">
-          <div className="flex justify-between items-end mb-16">
+        <div className="fix-12-12 px-4 md:px-0">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-16 gap-4">
             <div className="ae-1">
-              <h2 className="text-6xl font-black text-white tracking-tight">{t.recipes}</h2>
-              <p className="text-white/40 mt-3 text-xl font-medium">{language === 'ar' ? 'أشهى الأطباق الصحية باستخدام منتجاتنا الطازجة.' : 'Delicious healthy dishes using our fresh produce.'}</p>
+              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight">{t.recipes}</h2>
+              <p className="text-white/40 mt-2 md:mt-3 text-base md:text-xl font-medium">{language === 'ar' ? 'أشهى الأطباق الصحية باستخدام منتجاتنا الطازجة.' : 'Delicious healthy dishes using our fresh produce.'}</p>
             </div>
-            <button onClick={() => navigate('/blogs')} className="text-fruit-primary font-black text-lg flex items-center gap-3 ae-2 hover:gap-5 transition-all">
+            <button onClick={() => navigate('/blogs')} className="text-fruit-primary font-black text-sm md:text-lg flex items-center gap-2 md:gap-3 ae-2 hover:gap-5 transition-all">
               {language === 'ar' ? 'شاهد الكل' : 'View All'}
-              <ArrowRight size={24} className={language === 'ar' ? 'rotate-180' : ''} />
+              <ArrowRight size={20} className={language === 'ar' ? 'rotate-180' : ''} />
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 ae-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10 ae-3">
             {homeRecipes.length > 0 ? (
               homeRecipes.map((recipe, i) => (
                 <div key={i} onClick={() => navigate(`/blogs/${recipe.id}`)} className="bg-white/5 rounded-[48px] overflow-hidden border border-white/10 group cursor-pointer backdrop-blur-md hover:border-fruit-primary/30 transition-all">
