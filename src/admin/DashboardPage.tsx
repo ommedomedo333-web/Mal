@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -7,7 +6,6 @@ import { useAuthContext } from '../supabase/context-providers';
 import { useAdminProducts } from './hooks/useProducts';
 import ProductCard from './components/ProductCard';
 import ProductModal from './components/ProductModal';
-import CategoryModal from './components/CategoryModal';
 import RecipeCard from './components/RecipeCard';
 import RecipeModal from './components/RecipeModal';
 import { useNavigate } from 'react-router-dom';
@@ -29,11 +27,10 @@ const DashboardPage: React.FC<DashboardProps> = ({ orderHistory = [], updateOrde
     const navigate = useNavigate();
     const [categories, setCategories] = useState<any[]>([]);
     const [activeIdx, setActiveIdx] = useState(0);
-    const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'categories' | 'recipes' | 'blogs'>('orders');
+    const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'blogs'>('orders');
     const [view, setView] = useState<'cards' | 'menu'>('cards');
     const [searchQuery, setSearchQuery] = useState('');
     const [modal, setModal] = useState<{ open: boolean; item: any }>({ open: false, item: null });
-    const [categoryModal, setCategoryModal] = useState<{ open: boolean; item: any }>({ open: false, item: null });
     const [recipeModal, setRecipeModal] = useState<{ open: boolean; item: any }>({ open: false, item: null });
     const [recipes, setRecipes] = useState<any[]>([]);
     const [loadingRecipes, setLoadingRecipes] = useState(false);
@@ -107,8 +104,6 @@ const DashboardPage: React.FC<DashboardProps> = ({ orderHistory = [], updateOrde
         }
     };
 
-    };
-
     const handleSaveRecipe = async (payload: any) => {
         try {
             setLoadingRecipes(true);
@@ -168,7 +163,6 @@ const DashboardPage: React.FC<DashboardProps> = ({ orderHistory = [], updateOrde
                     <div className="hidden lg:flex items-center bg-white/5 rounded-xl p-1 border border-white/10">
                         <button onClick={() => setActiveTab('orders')} className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'orders' ? 'bg-fruit-primary text-black' : 'text-white/60 hover:text-white'}`}>الطلبات</button>
                         <button onClick={() => setActiveTab('products')} className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'products' ? 'bg-fruit-primary text-black' : 'text-white/60 hover:text-white'}`}>المنتجات</button>
-                        <button onClick={() => setActiveTab('categories')} className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'categories' ? 'bg-fruit-primary text-black' : 'text-white/60 hover:text-white'}`}>الأقسام</button>
                         <button onClick={() => setActiveTab('blogs')} className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'blogs' ? 'bg-fruit-primary text-black' : 'text-white/60 hover:text-white'}`}>المدونة</button>
                     </div>
                 </div>
@@ -188,12 +182,6 @@ const DashboardPage: React.FC<DashboardProps> = ({ orderHistory = [], updateOrde
                         <button onClick={() => setModal({ open: true, item: null })} className="bg-fruit-primary text-black px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:scale-105 transition-transform">
                             <Plus size={18} />
                             <span>إضافة منتج</span>
-                        </button>
-                    )}
-                    {activeTab === 'categories' && (
-                        <button onClick={() => setCategoryModal({ open: true, item: null })} className="bg-fruit-primary text-black px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:scale-105 transition-transform">
-                            <Plus size={18} />
-                            <span>إضافة قسم</span>
                         </button>
                     )}
                     {activeTab === 'blogs' && (
@@ -375,36 +363,8 @@ const DashboardPage: React.FC<DashboardProps> = ({ orderHistory = [], updateOrde
                             </div>
                         )}
                     </>
-                ) : activeTab === 'categories' ? (
-                    <div className="mb-10 max-w-5xl mx-auto">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-                            <div><h1 className="text-4xl font-black mb-1">إدارة الأقسام</h1><p className="text-white/40 text-sm font-bold">يمكنك إضافة أو تعديل أو حذف الأقسام الرئيسية للمتجر</p></div>
-                            <button onClick={() => setCategoryModal({ open: true, item: null })} className="bg-fruit-primary text-black px-6 py-3 rounded-2xl text-sm font-black flex items-center gap-2 shadow-lg shadow-fruit-primary/20 hover:scale-105 active:scale-95 transition-all">
-                                <Plus size={22} /><span>إضافة قسم جديد</span>
-                            </button>
-                        </div>
-                        <div className="grid grid-cols-1 gap-4">
-                            {categories.map(c => (
-                                <div key={c.id} className="bg-white/5 border border-white/10 p-6 rounded-[28px] flex items-center justify-between hover:bg-white/[0.07] transition-all group">
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
-                                            {c.icon || c.emoji || '📦'}
-                                        </div>
-                                        <div>
-                                            <div className="text-xl font-black text-white">{c.name_ar}</div>
-                                            <div className="text-xs text-white/20 font-bold uppercase tracking-widest">{c.name_en} • {products.filter(p => p.category_id === c.id).length} منتج</div>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <button onClick={() => setCategoryModal({ open: true, item: c })} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 hover:bg-fruit-primary/10 text-white/40 hover:text-fruit-primary transition-all"><Edit size={20} /></button>
-                                        <button onClick={() => handleDeleteCategory(c.id)} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-red-500/5 hover:bg-red-500/10 text-red-500/40 hover:text-red-500 transition-all"><Trash2 size={20} /></button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 ) : (
-                    /* BLOGS & RECIPES TAB (MERGED) */
+                    /* BLOGS & RECIPES TAB */
                     <div className="max-w-7xl mx-auto px-4 w-full">
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                             <div>
@@ -470,7 +430,7 @@ const DashboardPage: React.FC<DashboardProps> = ({ orderHistory = [], updateOrde
                 </div>, document.body
             )}
 
-            {/* DELETE CONFIRMATION PORTAL (FROM OLD DASHBOARD) */}
+            {/* DELETE CONFIRMATION PORTAL */}
             {deleteConfirm && createPortal(
                 <div className="fixed inset-0 flex items-center justify-center p-6" style={{ direction: 'rtl', fontFamily: 'Tajawal, sans-serif', zIndex: 1000000, position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}>
                     <div className="absolute inset-0 bg-black/95 backdrop-blur-xl" onClick={() => setDeleteConfirm(null)} style={{ zIndex: -1 }} />
@@ -499,11 +459,9 @@ const DashboardPage: React.FC<DashboardProps> = ({ orderHistory = [], updateOrde
             )}
 
             <ProductModal open={modal.open} onClose={() => setModal({ open: false, item: null })} onSave={handleSave} initial={modal.item} accent={cat.accent || '#4ade80'} categories={categories} />
-            <CategoryModal open={categoryModal.open} onClose={() => setCategoryModal({ open: false, item: null })} onSave={handleSaveCategory} initial={categoryModal.item} />
             <RecipeModal open={recipeModal.open} onClose={() => setRecipeModal({ open: false, item: null })} onSave={handleSaveRecipe} initial={recipeModal.item} />
         </div>
     );
 };
 
 export default DashboardPage;
-
