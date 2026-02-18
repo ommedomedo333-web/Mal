@@ -34,6 +34,7 @@ export interface WalletTransaction {
   amount: number;
   status: string;
   description: string;
+  metadata?: any;
   created_at: string;
 }
 
