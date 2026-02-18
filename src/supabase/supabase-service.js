@@ -294,15 +294,34 @@ export const walletService = {
       const newPoints = (wallet.points_balance || 0) + Math.round(points);
 
       // Update points_balance
+      console.log(`Updating wallet ${wallet.id} with ${newPoints} points...`);
       const { data: updatedWallet, error: updateError } = await supabase
         .from('wallets')
-        .update({ points_balance: newPoints, updated_at: new Date() })
+        .update({ points_balance: newPoints, updated_at: new Date().toISOString() })
         .eq('id', wallet.id)
         .select()
         .single();
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error("Wallet update error:", updateError);
+        throw updateError;
+      }
+      console.log("Wallet updated successfully:", updatedWallet);
 
+      // 2. Record Points Transaction
+      console.log("Recording points transaction...");
+      await supabase
+        .from('wallet_transactions')
+        .insert([{
+          wallet_id: wallet.id,
+          transaction_type: 'refund', // Closest type or use a new one if allowed
+          amount: points, // Using amount column for points too
+          status: 'completed',
+          description: description,
+          metadata: { is_points: true, points_awarded: Math.round(points) }
+        }]);
+
+      console.log("Monthly stats update started...");
       // Update Monthly Stats
       const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
       const { error: statsError } = await supabase.rpc('increment_monthly_stats', {
