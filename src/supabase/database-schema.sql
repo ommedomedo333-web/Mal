@@ -180,3 +180,79 @@ CREATE TABLE public.cart (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(user_id, product_id)
 );
+-- ==========================================
+-- TABLE: user_monthly_stats
+-- ==========================================
+CREATE TABLE public.user_monthly_stats (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    month TEXT NOT NULL, -- Format: YYYY-MM
+    points_earned INTEGER DEFAULT 0,
+    profit_earned DECIMAL(10,2) DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(user_id, month)
+);
+
+-- ==========================================
+-- FUNCTIONS & RPCs
+-- ==========================================
+
+-- Function to increment monthly stats
+CREATE OR REPLACE FUNCTION public.increment_monthly_stats(
+    p_user_id UUID,
+    p_month TEXT,
+    p_points INTEGER DEFAULT 0,
+    p_profit DECIMAL DEFAULT 0
+)
+RETURNS VOID AS $$
+BEGIN
+    INSERT INTO public.user_monthly_stats (user_id, month, points_earned, profit_earned)
+    VALUES (p_user_id, p_month, p_points, p_profit)
+    ON CONFLICT (user_id, month)
+    DO UPDATE SET 
+        points_earned = public.user_monthly_stats.points_earned + p_points,
+        profit_earned = public.user_monthly_stats.profit_earned + p_profit,
+        updated_at = NOW();
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to process wallet payment atomically
+CREATE OR REPLACE FUNCTION public.process_wallet_payment(
+    p_user_id UUID,
+    p_amount DECIMAL,
+    p_order_id TEXT,
+    p_description TEXT DEFAULT 'Payment'
+)
+RETURNS JSON AS $$
+DECLARE
+    v_wallet_id UUID;
+    v_balance DECIMAL;
+BEGIN
+    -- 1. Get wallet
+    SELECT id, balance INTO v_wallet_id, v_balance 
+    FROM public.wallets 
+    WHERE user_id = p_user_id 
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RETURN json_build_object('success', false, 'error', 'Wallet not found');
+    END IF;
+
+    -- 2. Check balance
+    IF v_balance < p_amount THEN
+        RETURN json_build_object('success', false, 'error', 'Insufficient balance');
+    END IF;
+
+    -- 3. Update balance
+    UPDATE public.wallets 
+    SET balance = balance - p_amount, updated_at = NOW()
+    WHERE id = v_wallet_id;
+
+    -- 4. Record transaction
+    INSERT INTO public.wallet_transactions (wallet_id, transaction_type, amount, status, description, reference_id)
+    VALUES (v_wallet_id, 'payment', p_amount, 'completed', p_description, p_order_id);
+
+    RETURN json_build_object('success', true);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
