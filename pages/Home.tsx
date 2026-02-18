@@ -93,11 +93,11 @@ const Home: React.FC = () => {
 
   const slidesData = [
     {
-  id: 0,
-  image: 'https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7',
-  content: (
-    <div className="hero-zoom-wrapper">
-      <style>{`
+      id: 0,
+      image: 'https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7',
+      content: (
+        <div className="hero-zoom-wrapper">
+          <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@800&display=swap');
         
         * {
@@ -405,46 +405,46 @@ const Home: React.FC = () => {
           -webkit-tap-highlight-color: transparent;
         }
       `}</style>
-      
-      <img 
-        src="https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7" 
-        alt="Elatyab Portal" 
-        className="hero-zoom__scene"
-        loading="eager"
-      />
-      
-      <img 
-        src="https://design-fenix.com.ar/codepen/scroll/starship.webp" 
-        alt="Starship Effect" 
-        className="hero-zoom__starship" 
-      />
-      
-      <h1 className="hero-zoom__title">
-        {language === 'ar' ? (
-          <>
-            المستقبل هنا
-            <br />
-            الأطيب
-          </>
-        ) : (
-          <>
-            The Future Is
-            <br />
-            Already Here
-          </>
-        )}
-      </h1>
-      
-      
-    </div>
-  )
-},
+
+          <img
+            src="https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7"
+            alt="Elatyab Portal"
+            className="hero-zoom__scene"
+            loading="eager"
+          />
+
+          <img
+            src="https://design-fenix.com.ar/codepen/scroll/starship.webp"
+            alt="Starship Effect"
+            className="hero-zoom__starship"
+          />
+
+          <h1 className="hero-zoom__title">
+            {language === 'ar' ? (
+              <>
+                المستقبل هنا
+                <br />
+                الأطيب
+              </>
+            ) : (
+              <>
+                The Future Is
+                <br />
+                Already Here
+              </>
+            )}
+          </h1>
+
+
+        </div>
+      )
+    },
     {
-  id: 1,
-  image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=2000',
-  content: (
-    <div className="max-w-7xl mx-auto px-4 w-full">
-      <style>{`
+      id: 1,
+      image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=2000',
+      content: (
+        <div className="max-w-7xl mx-auto px-4 md:px-6 w-full py-10 md:py-0">
+          <style>{`
         .feature-card {
           backdrop-filter: blur(12px);
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -478,118 +478,128 @@ const Home: React.FC = () => {
         .floating {
           animation: float 3s ease-in-out infinite;
         }
+        
+        /* Mobile Specific adjustments for really small screens */
+        @media (max-width: 400px) {
+          .mobile-tight-text {
+            font-size: 1.75rem !important;
+          }
+          .mobile-stack-stats {
+            grid-template-columns: 1fr !important;
+          }
+        }
       `}</style>
-      
-      <div className="text-center mb-12">
-        <div className="flex justify-center mb-6">
-          <span className="px-6 py-2.5 bg-fruit-primary/20 text-fruit-primary text-xs md:text-sm font-black uppercase tracking-[0.25em] border border-fruit-primary/30 rounded-full backdrop-blur-md ae-1">
-            {language === 'ar' ? '✨ طبيعي 100% • طازج يومياً' : '✨ 100% NATURAL • FRESH DAILY'}
-          </span>
-        </div>
-        
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter ae-2 mb-6 leading-tight">
-          {language === 'ar' ? (
-            <>
-              سوق <span className="text-fruit-primary">الفواكه الأطيب</span>
-            </>
-          ) : (
-            <>
-              <span className="text-fruit-primary">ELATYAB</span> MARKET
-            </>
-          )}
-        </h1>
-        
-        <p className="ae-3 mb-10 text-lg md:text-xl text-white/70 max-w-3xl mx-auto font-medium leading-relaxed">
-          {language === 'ar' 
-            ? 'استمتع بأجود أنواع الفواكه والخضروات المختارة بعناية من المزارع إليك مباشرة مع خدمة التوصيل السريع.' 
-            : 'Enjoy the finest selection of fruits and vegetables, handpicked from farms directly to your doorstep with express delivery.'}
-        </p>
-      </div>
 
-      {/* Features Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 ae-4">
-        {/* Feature 1 - Fresh & Quality */}
-        <div className="feature-card bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl p-6 md:p-8">
-          <div className="feature-icon text-4xl md:text-5xl mb-4 floating">🌱</div>
-          <h3 className="text-xl md:text-2xl font-black mb-3 text-white">
-            {language === 'ar' ? 'طازج يومياً' : 'Fresh Daily'}
-          </h3>
-          <p className="text-sm md:text-base text-white/60 leading-relaxed">
-            {language === 'ar' 
-              ? 'يتم اختيار كل ثمرة بعناية في الصباح الباكر لضمان أقصى درجات النضج والطعم.' 
-              : 'Each fruit is carefully selected early in the morning to ensure peak ripeness and flavor.'}
-          </p>
-        </div>
+          <div className="text-center mb-8 md:mb-12">
+            <div className="flex justify-center mb-4 md:mb-6">
+              <span className="px-5 py-2 md:px-6 md:py-2.5 bg-fruit-primary/20 text-fruit-primary text-[10px] md:text-sm font-black uppercase tracking-[0.2em] md:tracking-[0.25em] border border-fruit-primary/30 rounded-full backdrop-blur-md ae-1">
+                {language === 'ar' ? '✨ طبيعي 100% • طازج يومياً' : '✨ 100% NATURAL • FRESH DAILY'}
+              </span>
+            </div>
 
-        {/* Feature 2 - Express Delivery */}
-        <div className="feature-card bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl p-6 md:p-8">
-          <div className="feature-icon text-4xl md:text-5xl mb-4 floating" style={{animationDelay: '0.5s'}}>⚡</div>
-          <h3 className="text-xl md:text-2xl font-black mb-3 text-white">
-            {language === 'ar' ? 'توصيل سريع' : 'Express Delivery'}
-          </h3>
-          <p className="text-sm md:text-base text-white/60 leading-relaxed">
-            {language === 'ar' 
-              ? 'استلام الطلب المريح في أقل من ساعة.' 
-              : 'Receive your order at optimal temperature in less than 6 hours.'}
-          </p>
-        </div>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter ae-2 mb-4 md:mb-6 leading-tight mobile-tight-text">
+              {language === 'ar' ? (
+                <>
+                  سوق <span className="text-fruit-primary">الفواكه الأطيب</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-fruit-primary">ELATYAB</span> MARKET
+                </>
+              )}
+            </h1>
 
-        {/* Feature 3 - Quality Control */}
-        <div className="feature-card bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl p-6 md:p-8">
-          <div className="feature-icon text-4xl md:text-5xl mb-4 floating" style={{animationDelay: '1s'}}>✓</div>
-          <h3 className="text-xl md:text-2xl font-black mb-3 text-white">
-            {language === 'ar' ? 'فحص الجودة' : 'Quality Control'}
-          </h3>
-          <p className="text-sm md:text-base text-white/60 leading-relaxed">
-            {language === 'ar' 
-              ? 'اختبارات دقيقة لضمان خلو المنتجات من الكيماويات والمبيدات.' 
-              : 'Rigorous testing to ensure products are free from chemicals and pesticides.'}
-          </p>
-        </div>
-      </div>
+            <p className="ae-3 mb-6 md:mb-10 text-sm md:text-xl text-white/70 max-w-3xl mx-auto font-medium leading-relaxed px-2">
+              {language === 'ar'
+                ? 'استمتع بأجود أنواع الفواكه والخضروات المختارة بعناية من المزارع إليك مباشرة مع خدمة التوصيل السريع.'
+                : 'Enjoy the finest selection of fruits and vegetables, handpicked from farms directly to your doorstep with express delivery.'}
+            </p>
+          </div>
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-3 gap-4 md:gap-6 mb-10 ae-5">
-        <div className="text-center bg-white/5 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-md">
-          <div className="stats-number text-3xl md:text-5xl font-black mb-2">علي مدار الساعة </div>
-          <div className="text-xs md:text-sm text-white/60 font-medium">
-            {language === 'ar' ? 'ذكاء اصطناعي يرد علي استفساراتك' : 'Eco Packaging'}
+          {/* Features Grid - 1 col on mobile, 2 on tablet, 3 on desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 ae-4">
+            {/* Feature 1 - Fresh & Quality */}
+            <div className="feature-card bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl p-5 md:p-8">
+              <div className="feature-icon text-3xl md:text-5xl mb-3 md:mb-4 floating">🌱</div>
+              <h3 className="text-lg md:text-2xl font-black mb-2 md:mb-3 text-white">
+                {language === 'ar' ? 'طازج يومياً' : 'Fresh Daily'}
+              </h3>
+              <p className="text-xs md:text-base text-white/60 leading-relaxed">
+                {language === 'ar'
+                  ? 'يتم اختيار كل ثمرة بعناية في الصباح الباكر لضمان أقصى درجات النضج والطعم.'
+                  : 'Each fruit is carefully selected early in the morning to ensure peak ripeness and flavor.'}
+              </p>
+            </div>
+
+            {/* Feature 2 - Express Delivery */}
+            <div className="feature-card bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl p-5 md:p-8">
+              <div className="feature-icon text-3xl md:text-5xl mb-3 md:mb-4 floating" style={{ animationDelay: '0.5s' }}>⚡</div>
+              <h3 className="text-lg md:text-2xl font-black mb-2 md:mb-3 text-white">
+                {language === 'ar' ? 'توصيل سريع' : 'Express Delivery'}
+              </h3>
+              <p className="text-xs md:text-base text-white/60 leading-relaxed">
+                {language === 'ar'
+                  ? 'استلام الطلب المريح في أقل من ساعة.'
+                  : 'Receive your order at optimal temperature in less than 6 hours.'}
+              </p>
+            </div>
+
+            {/* Feature 3 - Quality Control */}
+            <div className="feature-card bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl p-5 md:p-8">
+              <div className="feature-icon text-3xl md:text-5xl mb-3 md:mb-4 floating" style={{ animationDelay: '1s' }}>✓</div>
+              <h3 className="text-lg md:text-2xl font-black mb-2 md:mb-3 text-white">
+                {language === 'ar' ? 'فحص الجودة' : 'Quality Control'}
+              </h3>
+              <p className="text-xs md:text-base text-white/60 leading-relaxed">
+                {language === 'ar'
+                  ? 'اختبارات دقيقة لضمان خلو المنتجات من الكيماويات والمبيدات.'
+                  : 'Rigorous testing to ensure products are free from chemicals and pesticides.'}
+              </p>
+            </div>
+          </div>
+
+          {/* Stats Section - 1 col on mobile for better readability, 3 on larger screens */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6 mb-8 md:mb-10 ae-5 mobile-stack-stats">
+            <div className="text-center bg-white/5 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-md">
+              <div className="stats-number text-2xl md:text-5xl font-black mb-1 md:mb-2">24 / 7</div>
+              <div className="text-[10px] md:text-sm text-white/60 font-medium">
+                {language === 'ar' ? 'ذكاء اصطناعي يرد علي استفساراتك' : 'AI 24/7 Support'}
+              </div>
+            </div>
+
+            <div className="text-center bg-white/5 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-md">
+              <div className="stats-number text-2xl md:text-5xl font-black mb-1 md:mb-2">+1200</div>
+              <div className="text-[10px] md:text-sm text-white/60 font-medium">
+                {language === 'ar' ? 'عميل سعيد' : 'Happy Customers'}
+              </div>
+            </div>
+
+            <div className="text-center bg-white/5 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-md">
+              <div className="stats-number text-2xl md:text-5xl font-black mb-1 md:mb-2">1h</div>
+              <div className="text-[10px] md:text-sm text-white/60 font-medium">
+                {language === 'ar' ? 'من المزرعة لبابك' : 'Farm to Door'}
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 ae-6">
+            <button
+              onClick={() => navigate('/categories')}
+              className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 py-4 md:px-12 md:py-5 rounded-[20px] md:rounded-[24px] font-black text-sm md:text-lg transition-all active:scale-95 backdrop-blur-md shadow-lg"
+            >
+              {t.categories}
+            </button>
+            <button
+              onClick={() => navigate('/blogs')}
+              className="w-full sm:w-auto bg-fruit-primary hover:bg-fruit-primary/80 text-white px-6 py-4 md:px-12 md:py-5 rounded-[20px] md:rounded-[24px] font-black text-sm md:text-lg transition-all active:scale-95 shadow-xl shadow-fruit-primary/30"
+            >
+              {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
+            </button>
           </div>
         </div>
-        
-        <div className="text-center bg-white/5 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-md">
-          <div className="stats-number text-3xl md:text-5xl font-black mb-2">+1200</div>
-          <div className="text-xs md:text-sm text-white/60 font-medium">
-            {language === 'ar' ? 'عميل سعيد' : 'Happy Customers'}
-          </div>
-        </div>
-        
-        <div className="text-center bg-white/5 border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-md">
-          <div className="stats-number text-3xl md:text-5xl font-black mb-2">1h</div>
-          <div className="text-xs md:text-sm text-white/60 font-medium">
-            {language === 'ar' ? 'من المزرعة لبابك' : 'Farm to Door'}
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Buttons */}
-      <div className="flex flex-col sm:flex-row justify-center gap-4 ae-6">
-        <button 
-          onClick={() => navigate('/categories')} 
-          className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 backdrop-blur-md shadow-lg"
-        >
-          {t.categories}
-        </button>
-        <button 
-          onClick={() => navigate('/blogs')} 
-          className="w-full sm:w-auto bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 shadow-xl shadow-fruit-primary/30"
-        >
-          {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
-        </button>
-      </div>
-    </div>
-  )
-},
+      )
+    },
     {
       id: 3,
       image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2000',
