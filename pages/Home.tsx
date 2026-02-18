@@ -93,27 +93,155 @@ const Home: React.FC = () => {
 
   const slidesData = [
     {
-      id: 0,
-      image: 'https://scontent.fcai19-3.fna.fbcdn.net/v/t39.30808-6/490957208_122157524360562826_547959309317714243_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=2a1932&_nc_ohc=zLf7ixijh3MQ7kNvwGZDJdq&_nc_oc=AdkzdvotuCU6WkD2i_ynEkjXiY4SzcIMP9tb70FMe6I_FQQg5o3E5iUfDbpU-K2_ggg&_nc_zt=23&_nc_ht=scontent.fcai19-3.fna&_nc_gid=DDSgOx-ZcFkVdXjaQqUv1Q&oh=00_AfuBQQk4UOm7548eCA054BukIy3nEeGRF8Mcwlgw2bMiRw&oe=699BCEE7',
-      content: (
-        <div className="flex flex-col items-center justify-center text-center min-h-screen">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight" style={{ fontFamily: 'Oxanium, sans-serif' }}>
-            <span className="font-black">{language === 'ar' ? 'أهلا في الأطيب' : 'Welcome to Elatyab'}</span>
-          </h1>
-          <p className="text-white/60 text-lg md:text-2xl mb-12 max-w-2xl font-medium">
-            {language === 'ar' ? 'استمتع بأجود أنواع الفواكه والخضروات المختارة بعناية من المزارع إليك مباشرة.' : 'Enjoy the finest selection of fruits and vegetables handpicked from farms directly to you.'}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-            <button onClick={() => navigate('/categories')} className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 backdrop-blur-md">
-              {t.categories}
-            </button>
-            <button onClick={() => navigate('/blogs')} className="bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 shadow-xl shadow-fruit-primary/20">
-              {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
-            </button>
-          </div>
-        </div>
-      )
-    },
+  id: 0,
+  image: 'https://design-fenix.com.ar/codepen/scroll/scene.webp',
+  content: (
+    <div className="hero-container">
+      <style>{`
+        .hero-container {
+          position: relative;
+          height: 100vh;
+          overflow: hidden;
+        }
+        
+        .hero__starship, .hero__scene {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          position: fixed;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+        
+        .hero__title {
+          font-family: "Oxanium", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 800;
+          font-style: normal;
+          position: fixed;
+          font-size: clamp(1.6rem, 10vw, 8rem);
+          white-space: nowrap;
+          color: white;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 2;
+          animation: contract linear forwards;
+          animation-timeline: scroll(root);
+          animation-range: 0vh 100dvh;
+          mix-blend-mode: overlay;
+          text-align: center;
+          line-height: 1.2;
+        }
+        
+        .hero__starship {
+          animation: upscale linear forwards;
+          animation-timeline: scroll(root);
+          animation-range: 0vh 60vh;
+          z-index: 3;
+          pointer-events: none;
+        }
+        
+        .hero__scene {
+          animation: unblur linear forwards;
+          animation-timeline: scroll(root);
+          animation-range: 0vh 100dvh;
+          z-index: 1;
+          pointer-events: none;
+        }
+        
+        @keyframes contract {
+          0% {
+            letter-spacing: -1.5rem;
+            opacity: 0;
+          }
+          100% {
+            letter-spacing: 0;
+            opacity: 1;
+          }
+        }
+        
+        @keyframes unblur {
+          0% {
+            filter: blur(10px);
+            transform: translate(-50%, -50%) scale(1.1);
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(1.4);
+            filter: blur(0px);
+          }
+        }
+        
+        @keyframes upscale {
+          0% {
+            transform: translate(-50%, -50%) scale(1);
+          }
+          95% {
+            transform: translate(-50%, -50%) scale(5);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(5);
+            opacity: 1;
+          }
+        }
+        
+        .hero__buttons {
+          position: fixed;
+          bottom: 10%;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 4;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          align-items: center;
+        }
+        
+        @media (min-width: 640px) {
+          .hero__buttons {
+            flex-direction: row;
+            gap: 1.5rem;
+          }
+        }
+      `}</style>
+      
+      <h1 className="hero__title">
+        {language === 'ar' ? 'أهلا في الأطيب' : 'The Future Is Already Here'}
+        <br />
+        {language === 'ar' ? 'المستقبل هنا' : 'Welcome to Elatyab'}
+      </h1>
+      
+      <img 
+        src="https://design-fenix.com.ar/codepen/scroll/scene.webp" 
+        alt="Scene" 
+        className="hero__scene" 
+      />
+      
+      <img 
+        src="https://design-fenix.com.ar/codepen/scroll/starship.webp" 
+        alt="Starship" 
+        className="hero__starship" 
+      />
+      
+      <div className="hero__buttons">
+        <button 
+          onClick={() => navigate('/categories')} 
+          className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 backdrop-blur-md"
+        >
+          {t.categories}
+        </button>
+        <button 
+          onClick={() => navigate('/blogs')} 
+          className="bg-fruit-primary hover:bg-fruit-primary/80 text-white px-8 md:px-12 py-3.5 md:py-5 rounded-[16px] md:rounded-[24px] font-black text-base md:text-lg transition-all active:scale-95 shadow-xl shadow-fruit-primary/20"
+        >
+          {language === 'ar' ? 'الوصفات والمدونة' : 'Recipes & Blog'}
+        </button>
+      </div>
+    </div>
+  )
+}
     {
       id: 1,
       image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=2000',
