@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAppContext } from "../contexts/AppContext";
-import { categoryService, productService } from "../src/supabase/supabase-service";
+import { categoryService, productService, walletService } from "../src/supabase/supabase-service";
 import { ArrowRight, RefreshCw, ShoppingCart, Search, Heart } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -77,7 +77,8 @@ function CategoryItemCard({ category, onClick, count = 0, isVisible, delay = 0 }
 function ExpandableProductCard({ item, accent = "#003e31", onAddToCart, cartItem, isExpanded, onToggle, setCart, setTotalPoints }: any) {
   const [pop, setPop] = useState(false);
   const hasInCart = !!cartItem;
-  const points = item.points || Math.round((item.price || 0) * 10);
+  const basePts = item.points || Math.round((item.price || 0) * 10);
+  const points = Math.round(basePts * walletService.PROFIT_MULTIPLIER);
 
   function handleAdd(e: any) {
     e.stopPropagation();
@@ -237,7 +238,7 @@ function ExpandableProductCard({ item, accent = "#003e31", onAddToCart, cartItem
 export default function CategoriesPage({ cart, setCart }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { setTotalPoints, totalPoints, pointsPop } = useAppContext() as any;
+  const { setTotalPoints, totalPoints, pointsPop, user } = useAppContext() as any;
 
   // State
   const [categories, setCategories] = useState<any[]>([]);
@@ -331,9 +332,15 @@ export default function CategoriesPage({ cart, setCart }: any) {
       return [...prev, { ...item, qty: 1 }];
     });
 
-    // Points logic
-    const pts = item.points || Math.round((item.price || 0) * 10);
+    // Points logic with Profit
+    const basePts = item.points || Math.round((item.price || 0) * 10);
+    const pts = Math.round(basePts * walletService.PROFIT_MULTIPLIER);
     setTotalPoints((prev: number) => prev + pts);
+
+    // Save points to DB
+    if (user?.id) {
+      walletService.addPoints(user.id, pts, `Loyalty Profit for ${item.name_ar}`);
+    }
 
     toast.success(`تمت إضافة ${item.name_ar} للسلة`);
   };
