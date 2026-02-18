@@ -143,6 +143,9 @@ const AIAssistant: React.FC = () => {
       const openRouterKey = import.meta.env.VITE_OPENROUTER_API_KEY;
       const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
+      console.log('OpenRouter Key present:', !!openRouterKey);
+      console.log('Gemini Key present:', !!geminiKey);
+
       const productsContext = buildProductsContext();
       const hasProducts = products.length > 0;
 
@@ -171,6 +174,7 @@ ${hasProducts ? productsContext : (language === 'ar' ? '\n\nملاحظة: لم �
 
       // Try OpenRouter first
       if (openRouterKey && openRouterKey.startsWith('sk-or-')) {
+        console.log('Attempting OpenRouter...');
         try {
           const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
@@ -181,7 +185,7 @@ ${hasProducts ? productsContext : (language === 'ar' ? '\n\nملاحظة: لم �
               'X-Title': 'Elatyab Market AI Assistant'
             },
             body: JSON.stringify({
-              model: 'stepfun/step-3.5-flash:free',
+              model: 'liquid/lfm-2.5-1.2b-thinking:free', // Using a very stable free model
               messages: [
                 { role: 'system', content: systemPrompt },
                 ...messages.slice(-6).map(m => ({
@@ -190,7 +194,7 @@ ${hasProducts ? productsContext : (language === 'ar' ? '\n\nملاحظة: لم �
                 })),
                 { role: 'user', content: userMessage }
               ],
-              max_tokens: 800,
+              max_tokens: 1000,
               temperature: 0.7
             })
           });
@@ -198,9 +202,14 @@ ${hasProducts ? productsContext : (language === 'ar' ? '\n\nملاحظة: لم �
           if (response.ok) {
             const data = await response.json();
             aiResponse = data.choices?.[0]?.message?.content;
+            console.log('OpenRouter success');
           } else {
-            const err = await response.json();
+            const err = await response.json().catch(() => ({}));
             console.warn('OpenRouter failed, status:', response.status, err);
+            // If it's a 401/403, we know the key is the issue
+            if (response.status === 401 || response.status === 403) {
+              console.error('OpenRouter API Key appears invalid or expired');
+            }
           }
         } catch (e) {
           console.warn('OpenRouter fetch error:', e);
@@ -209,9 +218,11 @@ ${hasProducts ? productsContext : (language === 'ar' ? '\n\nملاحظة: لم �
 
       // Fallback to Gemini
       if (!aiResponse && geminiKey) {
+        console.log('Attempting Gemini Fallback...');
         try {
+          // Using gemini-1.5-flash which is much more reliable and faster
           const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${geminiKey}`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -221,7 +232,11 @@ ${hasProducts ? productsContext : (language === 'ar' ? '\n\nملاحظة: لم �
                     role: 'user',
                     parts: [{ text: systemPrompt + "\n\nUser Question: " + userMessage }]
                   }
-                ]
+                ],
+                generationConfig: {
+                  maxOutputTokens: 1000,
+                  temperature: 0.7
+                }
               })
             }
           );
@@ -229,6 +244,10 @@ ${hasProducts ? productsContext : (language === 'ar' ? '\n\nملاحظة: لم �
           if (response.ok) {
             const data = await response.json();
             aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            console.log('Gemini success');
+          } else {
+            const err = await response.json().catch(() => ({}));
+            console.warn('Gemini failed, status:', response.status, err);
           }
         } catch (e) {
           console.warn('Gemini fallback failed:', e);
@@ -237,8 +256,8 @@ ${hasProducts ? productsContext : (language === 'ar' ? '\n\nملاحظة: لم �
 
       if (!aiResponse) {
         throw new Error(language === 'ar'
-          ? 'تعذر الاتصال بالذكاء الاصطناعي. يرجى التحقق من مفاتيح API في ملف .env'
-          : 'Could not connect to AI. Please check API keys in .env file');
+          ? 'تعذر الاتصال بالسيرفر. يرجى التأكد من صلاحية المفاتيح وتوفر رصيد في OpenRouter أو Gemini.'
+          : 'Could not connect to AI. Please ensure keys are valid and have credits.');
       }
 
       setMessages(prev => [...prev, { role: 'ai', content: aiResponse }]);
