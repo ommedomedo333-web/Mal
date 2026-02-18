@@ -201,6 +201,7 @@ export const cartService = {
 };
 
 export const walletService = {
+  PROFIT_MULTIPLIER: 1.5, // 50% Profit Bonus
   getWallet: async (userId) => {
     try {
       const { data, error } = await supabase
@@ -210,10 +211,9 @@ export const walletService = {
         .single();
 
       if (error && error.code === 'PGRST116') {
-        // Wallet doesn't exist, create one
         const { data: newWallet, error: createError } = await supabase
           .from('wallets')
-          .insert([{ user_id: userId, balance: 0 }])
+          .insert([{ user_id: userId, balance: 0, points_balance: 0 }])
           .select()
           .single();
         if (createError) throw createError;
@@ -229,12 +229,10 @@ export const walletService = {
   },
   addMoney: async (userId, amount, description = 'Recharge') => {
     try {
-      // 1. Get or create wallet
       const walletRes = await walletService.getWallet(userId);
       if (!walletRes.success) throw new Error(walletRes.error);
       const wallet = walletRes.data;
 
-      // 2. Update balance
       const newBalance = parseFloat(wallet.balance) + parseFloat(amount);
       const { data: updatedWallet, error: updateError } = await supabase
         .from('wallets')
@@ -244,6 +242,31 @@ export const walletService = {
         .single();
 
       if (updateError) throw updateError;
+
+      // Update Monthly Stats (Profit)
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      await supabase.from('user_monthly_stats').upsert({
+        user_id: userId,
+        month: currentMonth,
+        profit_earned: 0 // Will initialize if not exists
+      }, { onConflict: 'user_id, month' });
+
+      // Fetch or use RPC to increment
+      const { data: stats } = await supabase
+        .from('user_monthly_stats')
+        .select('profit_earned')
+        .eq('user_id', userId)
+        .eq('month', currentMonth)
+        .single();
+
+      await supabase
+        .from('user_monthly_stats')
+        .update({
+          profit_earned: (parseFloat(stats?.profit_earned || 0) + parseFloat(amount)),
+          updated_at: new Date()
+        })
+        .eq('user_id', userId)
+        .eq('month', currentMonth);
 
       // 3. Record transaction
       await supabase
@@ -261,6 +284,80 @@ export const walletService = {
       console.error("Add money error:", e);
       return { success: false, error: e.message };
     }
+  },
+  addPoints: async (userId, points, description = 'Loyalty points added') => {
+    try {
+      const walletRes = await walletService.getWallet(userId);
+      if (!walletRes.success) throw new Error(walletRes.error);
+      const wallet = walletRes.data;
+
+      const newPoints = (wallet.points_balance || 0) + Math.round(points);
+
+      // Update points_balance
+      const { data: updatedWallet, error: updateError } = await supabase
+        .from('wallets')
+        .update({ points_balance: newPoints, updated_at: new Date() })
+        .eq('id', wallet.id)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
+
+      // Update Monthly Stats
+      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+      const { error: statsError } = await supabase.rpc('increment_monthly_stats', {
+        p_user_id: userId,
+        p_month: currentMonth,
+        p_points: Math.round(points)
+      });
+
+      // Fallback if RPC doesn't exist (UPSERT logic)
+      if (statsError) {
+        const { data: currentStats } = await supabase
+          .from('user_monthly_stats')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('month', currentMonth)
+          .single();
+
+        if (currentStats) {
+          await supabase
+            .from('user_monthly_stats')
+            .update({
+              points_earned: currentStats.points_earned + Math.round(points),
+              updated_at: new Date()
+            })
+            .eq('id', currentStats.id);
+        } else {
+          await supabase
+            .from('user_monthly_stats')
+            .insert([{
+              user_id: userId,
+              month: currentMonth,
+              points_earned: Math.round(points)
+            }]);
+        }
+      }
+
+      return { success: true, data: updatedWallet };
+    } catch (e) {
+      console.error("Add points error:", e);
+      return { success: false, error: e.message };
+    }
+  },
+  getMonthlyStats: async (userId) => {
+    try {
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const { data, error } = await supabase
+        .from('user_monthly_stats')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('month', currentMonth)
+        .single();
+
+      if (error && error.code === 'PGRST116') return { success: true, data: { points_earned: 0, profit_earned: 0 } };
+      return { success: !error, data };
+    } catch (e) { return { success: false }; }
   },
   getTransactions: async (userId) => {
     try {
