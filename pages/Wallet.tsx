@@ -144,27 +144,38 @@ const Wallet: React.FC = () => {
           <div className="relative bg-fruit-surface/40 backdrop-blur-3xl p-10 rounded-[40px] border border-white/10 shadow-2xl overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-fruit-primary/10 rounded-full -translate-y-32 translate-x-32 blur-3xl" />
 
-            <div className="flex justify-between items-start mb-10">
-              <div>
-                <p className="text-white/40 text-xs font-black uppercase tracking-[0.2em] mb-2">{t.wallet}</p>
-                <div className="flex items-baseline gap-2">
-                  <h1 className="text-6xl font-black text-white">{(wallet?.balance || 0).toFixed(2)}</h1>
-                  <span className="text-xl text-fruit-primary font-black">{t.egp}</span>
-                </div>
+            <div className="flex flex-col items-center justify-center text-center">
+              <p className="text-fruit-primary text-xs font-black uppercase tracking-[0.3em] mb-4">
+                {t.btsAwards}
+              </p>
+
+              <div className="flex items-baseline gap-3 mb-2">
+                <h1 className="text-7xl font-black text-white">{wallet?.points_balance || 0}</h1>
+                <span className="text-2xl text-white/40 font-black">BTS</span>
               </div>
-              <div className="text-right">
-                <p className="text-fruit-primary text-xs font-black uppercase tracking-[0.2em] mb-2">
-                  {t.btsAwards}
+
+              <div className="px-6 py-2 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
+                <p className="text-white/60 font-black flex items-center gap-2">
+                  <span className="text-white/40">{language === 'ar' ? 'تساوي:' : 'Equals:'}</span>
+                  <span className="text-fruit-primary text-xl">{((wallet?.points_balance || 0) / 100).toFixed(2)}</span>
+                  <span className="text-xs">{t.egp}</span>
                 </p>
-                <div className="flex items-baseline justify-end gap-2">
-                  <h1 className="text-4xl font-black text-white">{wallet?.points_balance || 0}</h1>
-                  <span className="text-lg text-white/40 font-black">BTS</span>
+              </div>
+
+              <div className="mt-10 w-full grid grid-cols-2 gap-4">
+                <div className="p-4 bg-white/5 rounded-3xl border border-white/5 text-center">
+                  <p className="text-[10px] text-white/30 font-black uppercase tracking-widest mb-1">{language === 'ar' ? 'الرصيد النقدي' : 'Cash Balance'}</p>
+                  <p className="text-2xl font-black text-white">{(wallet?.balance || 0).toFixed(2)} <span className="text-[10px] text-white/40">{t.egp}</span></p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-3xl border border-white/5 text-center">
+                  <p className="text-[10px] text-white/30 font-black uppercase tracking-widest mb-1">{language === 'ar' ? 'قيمة المكافآت' : 'Rewards Value'}</p>
+                  <p className="text-2xl font-black text-fruit-primary">{((wallet?.points_balance || 0) / 100).toFixed(2)} <span className="text-[10px] text-white/40">{t.egp}</span></p>
                 </div>
               </div>
             </div>
 
             {/* Monthly Profit Section */}
-            <div className="mb-8 p-6 bg-white/5 rounded-[32px] border border-white/10">
+            <div className="mt-8 p-6 bg-white/5 rounded-[32px] border border-white/10">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-white/40 text-[10px] font-black uppercase tracking-widest">
                   {language === 'ar' ? 'أرباح BTS هذا الشهر' : 'Monthly BTS Profit'}
@@ -192,84 +203,6 @@ const Wallet: React.FC = () => {
                 {language === 'ar' ? 'هدف الشهر: 1000 BTS' : 'Monthly Goal: 1000 BTS'}
               </p>
             </div>
-
-            <div className="grid grid-cols-1 gap-6">
-              <div className="bg-white/5 p-6 rounded-3xl border border-white/5">
-                <label className="text-white/40 text-xs font-bold mb-3 block uppercase tracking-wider">{language === 'ar' ? 'مبلغ الشحن السريع' : 'Quick Recharge'}</label>
-                <div className="flex gap-3 mb-6">
-                  {[50, 100, 200, 500].map((val) => (
-                    <button
-                      key={val}
-                      onClick={() => setAmount(val)}
-                      className={`flex-1 py-3 rounded-2xl font-black transition-all ${amount === val ? 'bg-fruit-primary text-white scale-105' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
-                    >
-                      {val}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="relative mb-6">
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(Number(e.target.value))}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-black text-xl outline-none focus:border-fruit-primary focus:ring-4 focus:ring-fruit-primary/20 transition-all text-center"
-                    min="10"
-                  />
-                  <div className="absolute inset-y-0 right-6 flex items-center pointer-events-none">
-                    <span className="text-white/20 font-black">{t.egp}</span>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <button
-                    onClick={handlePaymobRecharge}
-                    disabled={processing}
-                    className="flex-1 flex items-center justify-center gap-3 bg-blue-600 text-white p-5 rounded-[24px] font-black text-lg hover:bg-blue-700 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-blue-900/40 disabled:opacity-50"
-                  >
-                    <CreditCard size={24} />
-                    <span>Paymob</span>
-                  </button>
-
-                  <button
-                    onClick={handleMockRecharge}
-                    disabled={processing}
-                    className="flex-1 flex items-center justify-center gap-3 bg-white/10 text-white p-5 rounded-[24px] font-black text-lg hover:bg-white/20 hover:scale-[1.02] active:scale-95 transition-all border border-white/10 disabled:opacity-50"
-                  >
-                    <Plus size={24} />
-                    <span>{language === 'ar' ? 'تجريبي' : 'Test'}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Supported Methods */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10"></div>
-            <p className="text-white/30 text-[10px] font-black uppercase tracking-[0.3em]">{language === 'ar' ? 'طرق الدفع المدعومة' : 'Methods Support'}</p>
-            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10"></div>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {[
-              { name: 'Vodafone', color: 'bg-red-600', label: 'Vodafone Cash' },
-              { name: 'Orange', color: 'bg-orange-500', label: 'Orange Cash' },
-              { name: 'Etisalat', color: 'bg-green-600', label: 'Etisalat Cash' },
-              { name: 'WE', color: 'bg-purple-800', label: 'WE Pay' },
-              { name: 'InstaPay', color: 'bg-purple-600', label: 'InstaPay' },
-              { name: 'Fawry', color: 'bg-blue-500', label: 'Fawry' },
-              { name: 'Meeza', color: 'bg-red-800', label: 'Meeza' },
-              { name: 'Cards', color: 'bg-blue-800', label: 'Visa / MasterCard' }
-            ].map((method) => (
-              <div key={method.name} className="group relative">
-                <div className={`px-4 py-2 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-3 hover:bg-white/10 hover:border-white/20 transition-all cursor-default`}>
-                  <div className={`w-2.5 h-2.5 rounded-full ${method.color} shadow-[0_0_10px_rgba(255,255,255,0.2)]`} />
-                  <span className="text-white/60 text-[10px] font-bold tracking-tight">{method.label}</span>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -293,11 +226,13 @@ const Wallet: React.FC = () => {
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-fruit-primary/20 to-transparent rounded-[32px] blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
                 <div className="relative bg-fruit-surface/40 backdrop-blur-xl p-6 rounded-[30px] border border-white/5 flex items-center justify-between hover:bg-white/5 transition-all">
                   <div className="flex items-center gap-5">
-                    <div className={`p-4 rounded-2xl ${tx.transaction_type === 'charge' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                      {tx.transaction_type === 'charge' ? <ArrowDownLeft size={24} /> : <ArrowUpRight size={24} />}
+                    <div className={`p-4 rounded-2xl ${tx.transaction_type === 'charge' || tx.metadata?.is_points ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                      {tx.transaction_type === 'charge' || tx.metadata?.is_points ? <ArrowDownLeft size={24} /> : <ArrowUpRight size={24} />}
                     </div>
                     <div>
-                      <p className="text-white font-black text-lg">{tx.description || (tx.transaction_type === 'charge' ? 'شحن رصيد' : 'دفع طلب')}</p>
+                      <p className="text-white font-black text-lg">
+                        {tx.description || (tx.transaction_type === 'charge' ? (language === 'ar' ? 'شحن رصيد' : 'Deposit') : (language === 'ar' ? 'دفع طلب' : 'Payment'))}
+                      </p>
                       <div className="flex items-center gap-2 mt-1">
                         <Clock size={12} className="text-white/20" />
                         <p className="text-white/30 text-xs font-bold">{new Date(tx.created_at).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
@@ -305,11 +240,13 @@ const Wallet: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className={`font-black text-2xl ${tx.transaction_type === 'charge' ? 'text-green-500' : 'text-red-500'}`}>
-                      {tx.transaction_type === 'charge' ? '+' : '-'}{tx.amount}
-                      <span className="text-[10px] ml-1 opacity-60">{t.egp}</span>
+                    <p className={`font-black text-2xl ${tx.transaction_type === 'charge' || tx.metadata?.is_points ? 'text-green-500' : 'text-red-500'}`}>
+                      {tx.transaction_type === 'charge' || tx.metadata?.is_points ? '+' : '-'}{tx.amount}
+                      <span className="text-[10px] ml-1 opacity-60">{tx.metadata?.is_points ? 'BTS' : t.egp}</span>
                     </p>
-                    <p className="text-[10px] text-white/20 font-black uppercase tracking-widest">{tx.transaction_type}</p>
+                    <p className="text-[10px] text-white/20 font-black uppercase tracking-widest">
+                      {tx.metadata?.is_points ? (language === 'ar' ? 'مكافأة' : 'REWARD') : tx.transaction_type}
+                    </p>
                   </div>
                 </div>
               </div>
