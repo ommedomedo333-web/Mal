@@ -151,7 +151,7 @@ const Wallet: React.FC = () => {
 
               <div className="flex items-baseline gap-3 mb-2">
                 <h1 className="text-7xl font-black text-white">{wallet?.points_balance || 0}</h1>
-                <span className="text-2xl text-white/40 font-black">BTS</span>
+                <span className="text-2xl text-white/40 font-black">{language === 'ar' ? 'نقطة' : 'pts'}</span>
               </div>
 
               <div className="px-6 py-2 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
@@ -178,7 +178,7 @@ const Wallet: React.FC = () => {
             <div className="mt-8 p-6 bg-white/5 rounded-[32px] border border-white/10">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-white/40 text-[10px] font-black uppercase tracking-widest">
-                  {language === 'ar' ? 'أرباح BTS هذا الشهر' : 'Monthly BTS Profit'}
+                  {language === 'ar' ? 'نقاط الأطيب هذا الشهر' : 'Monthly Atyab Points'}
                 </span>
                 <span className="text-fruit-primary text-[10px] font-black">
                   {new Date().toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', year: 'numeric' })}
@@ -187,7 +187,7 @@ const Wallet: React.FC = () => {
               <div className="flex items-end justify-between">
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-black text-white">+{monthlyStats?.points_earned || 0}</span>
-                  <span className="text-sm text-white/40 font-bold">BTS</span>
+                  <span className="text-sm text-white/40 font-bold">{language === 'ar' ? 'نقطة' : 'pts'}</span>
                 </div>
                 <div className="w-12 h-12 bg-fruit-primary/20 rounded-2xl flex items-center justify-center border border-fruit-primary/20">
                   <Clock className="text-fruit-primary" size={24} />
@@ -200,7 +200,7 @@ const Wallet: React.FC = () => {
                 />
               </div>
               <p className="mt-2 text-[9px] text-white/20 font-bold uppercase text-center">
-                {language === 'ar' ? 'هدف الشهر: 1000 BTS' : 'Monthly Goal: 1000 BTS'}
+                {language === 'ar' ? 'هدف الشهر: 1000 نقطة أطيب' : 'Monthly Goal: 1000 Atyab Points'}
               </p>
             </div>
           </div>
@@ -242,10 +242,10 @@ const Wallet: React.FC = () => {
                   <div className="text-right">
                     <p className={`font-black text-2xl ${tx.transaction_type === 'charge' || tx.metadata?.is_points ? 'text-green-500' : 'text-red-500'}`}>
                       {tx.transaction_type === 'charge' || tx.metadata?.is_points ? '+' : '-'}{tx.amount}
-                      <span className="text-[10px] ml-1 opacity-60">{tx.metadata?.is_points ? 'BTS' : t.egp}</span>
+                      <span className="text-[10px] ml-1 opacity-60">{tx.metadata?.is_points ? (language === 'ar' ? 'نقطة' : 'pts') : t.egp}</span>
                     </p>
                     <p className="text-[10px] text-white/20 font-black uppercase tracking-widest">
-                      {tx.metadata?.is_points ? (language === 'ar' ? 'مكافأة' : 'REWARD') : tx.transaction_type}
+                      {tx.metadata?.is_points ? (language === 'ar' ? 'نقاط أطيب' : 'ATYAB PTS') : tx.transaction_type}
                     </p>
                   </div>
                 </div>
