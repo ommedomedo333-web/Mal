@@ -34,6 +34,7 @@ export async function createAdminProduct(payload: any) {
         unit: payload.unit || 'كيلو',
         description_ar: payload.description_ar || null,
         description_en: payload.description_en || null,
+        subtitle_ar: payload.subtitle_ar || null, // New field
         image_url: payload.image_url || null,
         category_id: payload.category_id,
     };
@@ -60,6 +61,7 @@ export async function updateAdminProduct(id: string, payload: any) {
         unit: payload.unit || 'كيلو',
         description_ar: payload.description_ar || null,
         description_en: payload.description_en || null,
+        subtitle_ar: payload.subtitle_ar || null, // New field
         image_url: payload.image_url || null,
         category_id: payload.category_id
     };
