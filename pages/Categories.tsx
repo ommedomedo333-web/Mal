@@ -162,7 +162,7 @@ function ExpandableProductCard({ item, accent = "#003e31", onAddToCart, cartItem
             border: "1px solid #FDE68A", fontSize: "10px", borderRadius: "20px",
             padding: "1px 6px", fontWeight: 700,
           }}>
-            🪙 {points}
+            🪙 {points} نقطة
           </div>
         </div>
 
@@ -407,7 +407,7 @@ export default function CategoriesPage({ cart, setCart }: any) {
             marginTop: 15,
             animation: pointsPop ? "pointScale 0.4s ease" : "none",
           }}>
-            🪙 {totalPoints} pts
+            🪙 {totalPoints} نقطة أطيب
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
