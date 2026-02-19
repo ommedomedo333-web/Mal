@@ -238,23 +238,31 @@ function SendModal({ onClose, onSuccess }: SendModalProps) {
                         </button>
                     </div>
                     {form.target === 'user' && (
-                        <select
-                            value={form.target_user_id}
-                            onChange={e => setForm(f => ({ ...f, target_user_id: e.target.value }))}
-                            style={{
-                                width: '100%', padding: '12px 16px', borderRadius: '14px', fontSize: '13px',
-                                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(59,130,246,0.3)',
-                                color: '#fff', outline: 'none', fontFamily: 'Tajawal, sans-serif',
-                                appearance: 'none',
-                            }}
-                        >
-                            <option value="">-- اختر مستخدم --</option>
-                            {users.map((u: any) => (
-                                <option key={u.id} value={u.id} style={{ background: '#111' }}>
-                                    {u.full_name || u.email}
-                                </option>
-                            ))}
-                        </select>
+                        <div style={{ position: 'relative' }}>
+                            <select
+                                value={form.target_user_id}
+                                onChange={e => setForm(f => ({ ...f, target_user_id: e.target.value }))}
+                                style={{
+                                    width: '100%', padding: '12px 16px', borderRadius: '14px', fontSize: '13px',
+                                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(59,130,246,0.3)',
+                                    color: '#fff', outline: 'none', fontFamily: 'Tajawal, sans-serif',
+                                    appearance: 'none', cursor: 'pointer'
+                                }}
+                            >
+                                <option value="" style={{ background: '#111' }}>-- اختر مستخدم من القائمة ({users.length} مستخدم) --</option>
+                                {users.map((u: any) => (
+                                    <option key={u.id} value={u.id} style={{ background: '#111' }}>
+                                        👤 {u.full_name || 'بدون اسم'} | 📱 {u.phone_number || 'بدون رقم'} | 📧 {u.email} | 💰 {u.balance} ج.م | 🪙 {u.points} نقطة
+                                    </option>
+                                ))}
+                            </select>
+                            <div style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', opacity: 0.5 }}>
+                                <ChevronDown size={14} />
+                            </div>
+                            {users.length === 0 && (
+                                <p style={{ color: '#ef4444', fontSize: '11px', marginTop: '6px' }}>⚠️ لم يتم العثور على أي مستخدمين في قاعدة البيانات</p>
+                            )}
+                        </div>
                     )}
                 </div>
 
