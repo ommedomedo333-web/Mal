@@ -250,8 +250,23 @@ export const notificationService = {
     async getUsers() {
         const { data, error } = await supabase
             .from('users')
-            .select('id, full_name, email')
+            .select(`
+                id, 
+                full_name, 
+                email, 
+                phone_number,
+                created_at,
+                wallets (points_balance, balance)
+            `)
             .order('created_at', { ascending: false });
-        return { data: data || [], error };
+
+        // Flatten the data for easier use in the UI
+        const flattened = (data || []).map((u: any) => ({
+            ...u,
+            points: u.wallets?.[0]?.points_balance || 0,
+            balance: u.wallets?.[0]?.balance || 0
+        }));
+
+        return { data: flattened, error };
     },
 };
