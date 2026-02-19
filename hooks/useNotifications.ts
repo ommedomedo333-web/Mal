@@ -216,7 +216,7 @@ export const notificationService = {
         icon?: string;
         type?: string;
         target?: string;
-        target_user_id?: string;
+        target_user_id?: string | null;
         image_url?: string;
         action_url?: string;
     }) {
