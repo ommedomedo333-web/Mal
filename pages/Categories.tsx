@@ -128,8 +128,13 @@ function ExpandableProductCard({ item, accent = "#003e31", onAddToCart, cartItem
 
       <div style={{ paddingRight: 90, paddingLeft: isExpanded ? 18 : 56, paddingTop: 16, paddingBottom: 16 }}>
         {/* Name */}
-        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 16, fontWeight: 700, color: "#1a1a2e", lineHeight: 1.3, marginBottom: 4, textAlign: 'right' }}>
+        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 16, fontWeight: 700, color: "#1a1a2e", lineHeight: 1.3, marginBottom: 4, textAlign: 'right', display: 'flex', alignItems: 'baseline', gap: 6, flexWrap: 'wrap' }}>
           {item.name_ar}
+          {item.subtitle_ar && (
+            <span style={{ fontSize: 11, fontWeight: 600, color: accent, opacity: 0.7 }}>
+              • {item.subtitle_ar}
+            </span>
+          )}
         </div>
 
         {isExpanded && (
