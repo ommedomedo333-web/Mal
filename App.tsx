@@ -18,6 +18,7 @@ import FirstTimeLogin from './pages/FirstTimeLogin';
 import Signup from './pages/Signup';
 import BottomNav from './components/BottomNav';
 import PWAInstallBanner from './src/components/PWAInstallBanner';
+import NotificationBell from './components/NotificationBell';
 import { AppProvider, useAppContext } from './contexts/AppContext';
 import { CompleteAppProviders, ProtectedRoute } from './src/supabase/context-providers';
 
@@ -72,7 +73,7 @@ const MainApp: React.FC = () => {
       {/* PWA Install Banner - This is the primary "Download App" alert */}
       <PWAInstallBanner />
 
-      {/* Floating Header Actions (Cart & BTS) */}
+      {/* Floating Header Actions (Cart, Notifications & BTS) */}
       <div className="fixed top-5 right-5 z-20 flex items-center gap-3">
         {/* BTS Points Display */}
         <div
@@ -94,6 +95,9 @@ const MainApp: React.FC = () => {
             <span className="text-sm font-black text-white leading-none">{totalPoints || 0}</span>
           </div>
         </div>
+
+        {/* Notification Bell */}
+        <NotificationBell />
 
         {/* Cart Icon */}
         <div
