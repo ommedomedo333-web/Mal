@@ -15,6 +15,7 @@ interface ProductModalProps {
 const EMPTY = {
     name_ar: '',
     name_en: '',
+    subtitle_ar: '', // New initial description
     unit: 'كيلو',
     price: '',
     description_ar: '',
@@ -118,6 +119,10 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, onClose, onSave, init
                         <div>
                             <label style={labelStyle}>اسم الصنف (عربي) *</label>
                             <input style={inputStyle} value={form.name_ar} onChange={e => set('name_ar', e.target.value)} />
+                        </div>
+                        <div>
+                            <label style={labelStyle}>وصف أولي قصير (بجانب العنوان)</label>
+                            <input style={inputStyle} value={form.subtitle_ar} onChange={e => set('subtitle_ar', e.target.value)} placeholder="مثلاً: طازج يومياً" />
                         </div>
                         <div>
                             <label style={labelStyle}>السعر (جنيه) *</label>
