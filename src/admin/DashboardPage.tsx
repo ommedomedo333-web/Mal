@@ -344,7 +344,10 @@ const DashboardPage: React.FC<DashboardProps> = ({ orderHistory = [], updateOrde
                                             <tr key={p.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
                                                 <td className="px-6 py-4 flex items-center gap-3">
                                                     <img src={p.image_url} className="w-10 h-10 rounded-lg object-cover bg-white/5 border border-white/5 group-hover:scale-110 transition-transform" alt="" />
-                                                    <span className="font-bold">{p.name_ar}</span>
+                                                    <div className="flex flex-col">
+                                                        <span className="font-bold">{p.name_ar}</span>
+                                                        {p.subtitle_ar && <span className="text-[10px] text-white/30">{p.subtitle_ar}</span>}
+                                                    </div>
                                                 </td>
                                                 <td className="px-6 py-4 font-black text-fruit-primary">{p.price} ج.م</td>
                                                 <td className="px-6 py-4">
