@@ -14,7 +14,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     onEdit,
     onDelete,
 }) => {
-    const [hovered, setHovered]           = useState(false);
+    const [hovered, setHovered] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState(false);
 
     const isLowStock = product.stock_quantity !== undefined && product.stock_quantity < 10;
@@ -219,8 +219,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     fontFamily: 'Tajawal, sans-serif',
                     transition: 'color 0.2s',
                     ...(hovered ? { color: '#fff' } : {}),
+                    display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap'
                 }}>
                     {product.name_ar}
+                    {product.subtitle_ar && (
+                        <span style={{ fontSize: 11, fontWeight: 500, color: accent, opacity: 0.8 }}>
+                            ({product.subtitle_ar})
+                        </span>
+                    )}
                 </h3>
 
                 {/* Description */}
