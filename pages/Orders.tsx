@@ -306,7 +306,7 @@ const OrdersScreen: React.FC<{
               <span style={{ color: '#db6a28', fontSize: 13, fontWeight: 800 }}>
                 {language === 'ar' ? 'سوف تربح' : 'You will earn'} ({t.btsAwards})
               </span>
-              <span style={{ color: '#db6a28', fontWeight: 900 }}>+{(cartTotal * 1.5).toFixed(0)} BTS</span>
+              <span style={{ color: '#db6a28', fontWeight: 900 }}>+{(cartTotal * 1.5).toFixed(0)} {language === 'ar' ? 'نقطة أطيب' : 'Atyab pts'}</span>
             </div>
             <div style={{ height: 1, background: '#222', margin: '15px 0' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
