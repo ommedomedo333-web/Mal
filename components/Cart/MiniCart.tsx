@@ -74,7 +74,7 @@ const MiniCart: React.FC<MiniCartProps> = ({ onClose }) => {
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
               <p>{t.total}: {cartTotal} EGP</p>
               <p style={{ color: '#F59E0B', fontWeight: 700, fontSize: '14px' }}>
-                🪙 {cart.reduce((s, i) => s + Math.round(i.price * 10) * i.quantity, 0)} pts
+                🪙 {cart.reduce((s, i) => s + Math.round(i.price * 10) * i.quantity, 0)} نقطة أطيب
               </p>
             </div>
             <button className="checkout-btn" onClick={handleCheckout}>{t.checkout}</button>
