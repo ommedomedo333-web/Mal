@@ -36,6 +36,7 @@ interface AppContextType {
   updateQuantity: (productId: string, newQuantity: number) => void;
   clearCart: () => void;
   totalPoints: number;
+  setTotalPoints: React.Dispatch<React.SetStateAction<number>>;
   pointsPop: boolean;
   refreshWallet: () => Promise<void>;
 }
@@ -221,7 +222,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{
       language, setLanguage, t, cart, addToCart, removeFromCart, placeOrder, cartTotal, searchQuery, setSearchQuery, user, setUser, loading,
       paymentMethod, setPaymentMethod, walletBalance, cartCount, updateQuantity, clearCart,
-      totalPoints, pointsPop, refreshWallet: fetchWalletBalance
+      totalPoints, setTotalPoints, pointsPop, refreshWallet: fetchWalletBalance
     }}>
       {children}
     </AppContext.Provider>
