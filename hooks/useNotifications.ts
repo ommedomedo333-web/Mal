@@ -95,46 +95,50 @@ export function useNotifications() {
             supabase.removeChannel(channelRef.current);
         }
 
-        channelRef.current = supabase
-            .channel('notifications-realtime')
-            .on(
-                'postgres_changes',
-                { event: 'INSERT', schema: 'public', table: 'notifications' },
-                async (payload) => {
-                    const newNotif = payload.new as Notification;
-                    // Check if it targets this user
-                    const { data: { user } } = await supabase.auth.getUser();
-                    const isForMe =
-                        newNotif.target === 'all' ||
-                        (newNotif.target === 'user' && user && newNotif.target_user_id === user.id);
+        const channel = supabase.channel('notifications-realtime');
 
-                    if (isForMe && newNotif.is_active) {
-                        const enriched = { ...newNotif, is_read: false };
-                        setNotifications(prev => [enriched, ...prev]);
-                        setUnreadCount(prev => prev + 1);
-                        // Fire toast callback if set
-                        if (toastCallbackRef.current) {
-                            toastCallbackRef.current(enriched);
-                        }
+        channel.on(
+            'postgres_changes',
+            { event: 'INSERT', schema: 'public', table: 'notifications' },
+            async (payload) => {
+                const newNotif = payload.new as Notification;
+                // Check if it targets this user
+                const { data: { user } } = await supabase.auth.getUser();
+                const isForMe =
+                    newNotif.target === 'all' ||
+                    (newNotif.target === 'user' && user && newNotif.target_user_id === user.id);
+
+                if (isForMe && newNotif.is_active) {
+                    const enriched = { ...newNotif, is_read: false };
+                    setNotifications(prev => [enriched, ...prev]);
+                    setUnreadCount(prev => prev + 1);
+                    // Fire toast callback if set
+                    if (toastCallbackRef.current) {
+                        toastCallbackRef.current(enriched);
                     }
                 }
-            )
-            .on(
-                'postgres_changes',
-                { event: 'UPDATE', schema: 'public', table: 'notifications' },
-                () => {
-                    fetchNotifications();
-                }
-            )
-            .on(
-                'postgres_changes',
-                { event: 'DELETE', schema: 'public', table: 'notifications' },
-                (payload) => {
-                    setNotifications(prev => prev.filter(n => n.id !== payload.old.id));
-                    setUnreadCount(prev => Math.max(0, prev - 1));
-                }
-            )
-            .subscribe();
+            }
+        );
+
+        channel.on(
+            'postgres_changes',
+            { event: 'UPDATE', schema: 'public', table: 'notifications' },
+            () => {
+                fetchNotifications();
+            }
+        );
+
+        channel.on(
+            'postgres_changes',
+            { event: 'DELETE', schema: 'public', table: 'notifications' },
+            (payload) => {
+                setNotifications(prev => prev.filter(n => n.id !== payload.old.id));
+                setUnreadCount(prev => Math.max(0, prev - 1));
+            }
+        );
+
+        channel.subscribe();
+        channelRef.current = channel;
 
         return () => {
             if (channelRef.current) {
