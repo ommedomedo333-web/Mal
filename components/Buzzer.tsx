@@ -27,6 +27,17 @@ const MAZE_RINGS = [
   { radius: 10, gaps: [{ start: 340, end: 360 }, { start: 0, end: 10 }] },
 ];
 
+// Pre-calculate radii squared for faster distance checks
+const RING_RADII_SQ = MAZE_RINGS.map(r => ({
+  r: r.radius,
+  rSq: r.radius * r.radius,
+  gaps: r.gaps
+}));
+
+const WIN_RADIUS_SQ = WIN_RADIUS * WIN_RADIUS;
+const BORDER_RADIUS = 48.5;
+const BORDER_RADIUS_SQ = BORDER_RADIUS * BORDER_RADIUS;
+
 function buildRingPaths() {
   const paths: string[] = [];
   MAZE_RINGS.forEach((ring) => {
@@ -66,6 +77,22 @@ function lockDeviceToday() {
   localStorage.setItem(DEVICE_KEY, getTodayStr());
 }
 
+// Fast angle calculation without atan2
+function fastAngle(dx: number, dy: number): number {
+  return ((Math.atan2(dy, dx) * 180) / Math.PI + 360) % 360;
+}
+
+// Check if angle is in any gap
+function isInGap(angle: number, gaps: Array<{ start: number; end: number }>): boolean {
+  for (let i = 0; i < gaps.length; i++) {
+    const gap = gaps[i];
+    if (angle >= gap.start && angle <= gap.end) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const Buzzer: React.FC = () => {
   const { user, language, refreshWallet, setTotalPoints } = useAppContext() as any;
   const { refetch: refetchWalletData } = useWalletContext();
@@ -86,39 +113,6 @@ const Buzzer: React.FC = () => {
 
   useEffect(() => { userRef.current = user; }, [user]);
 
-  // Optimize touch handling with passive listeners
-  useEffect(() => {
-    const div = document.querySelector('[data-buzzer-container]');
-    if (!div) return;
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!userRef.current || wonRef.current || !svgRef.current) return;
-      
-      const svg = svgRef.current;
-      if (!svg) return;
-      
-      const pt = svg.createSVGPoint();
-      pt.x = e.touches[0].clientX;
-      pt.y = e.touches[0].clientY;
-
-      const ctm = svg.getScreenCTM();
-      if (!ctm) return;
-      const loc = pt.matrixTransform(ctm.inverse());
-
-      const dx = loc.x - pos.current.x;
-      const dy = loc.y - pos.current.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist > 0.2) {
-        vel.current.x = Math.min(Math.max(dx * SENSITIVITY, -MAX_SPEED), MAX_SPEED);
-        vel.current.y = Math.min(Math.max(dy * SENSITIVITY, -MAX_SPEED), MAX_SPEED);
-      }
-    };
-
-    div.addEventListener('touchmove', handleTouchMove, { passive: true });
-    return () => div.removeEventListener('touchmove', handleTouchMove);
-  }, []);
-
   const handlePointer = useCallback((e: React.TouchEvent | React.MouseEvent) => {
     if (!userRef.current || wonRef.current || !svgRef.current) return;
 
@@ -126,7 +120,6 @@ const Buzzer: React.FC = () => {
     const pt = svg.createSVGPoint();
 
     if ('touches' in e) {
-      // Don't prevent default on mobile to avoid scroll blocking
       pt.x = e.touches[0].clientX;
       pt.y = e.touches[0].clientY;
     } else {
@@ -140,9 +133,10 @@ const Buzzer: React.FC = () => {
 
     const dx = loc.x - pos.current.x;
     const dy = loc.y - pos.current.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
+    const distSq = dx * dx + dy * dy;
 
-    if (dist > 0.2) {
+    // Skip if movement is too small (dead zone)
+    if (distSq > 0.04) { // 0.2^2
       vel.current.x = Math.min(Math.max(dx * SENSITIVITY, -MAX_SPEED), MAX_SPEED);
       vel.current.y = Math.min(Math.max(dy * SENSITIVITY, -MAX_SPEED), MAX_SPEED);
     }
@@ -195,72 +189,72 @@ const Buzzer: React.FC = () => {
   const loop = useCallback(() => {
     if (wonRef.current) return;
 
-    // Apply friction - more stable movement
-    const friction = FRICTION;
-    vel.current.x *= friction;
-    vel.current.y *= friction;
+    // Apply friction
+    vel.current.x *= FRICTION;
+    vel.current.y *= FRICTION;
 
     // Early exit if velocity is negligible
-    if (Math.abs(vel.current.x) < 0.01 && Math.abs(vel.current.y) < 0.01) {
+    if (Math.abs(vel.current.x) < 0.005 && Math.abs(vel.current.y) < 0.005) {
       vel.current = { x: 0, y: 0 };
+      // Still update DOM for final position
+      if (ballRef.current) {
+        ballRef.current.setAttribute('cx', pos.current.x.toFixed(1));
+        ballRef.current.setAttribute('cy', pos.current.y.toFixed(1));
+      }
+      rafRef.current = requestAnimationFrame(loop);
+      return;
     }
 
-    let nx = pos.current.x + vel.current.x;
-    let ny = pos.current.y + vel.current.y;
+    const nx = pos.current.x + vel.current.x;
+    const ny = pos.current.y + vel.current.y;
 
     const dx = nx - 50;
     const dy = ny - 50;
     
-    // Use squared distance to avoid sqrt when not needed
     const distSq = dx * dx + dy * dy;
-    const dist = Math.sqrt(distSq);
 
-    // Win check first
-    if (dist < WIN_RADIUS) {
+    // Win check using squared distance (faster)
+    if (distSq < WIN_RADIUS_SQ) {
       handleWin();
       return;
     }
 
     let fx = nx, fy = ny;
-    const prevDistSq = (pos.current.x - 50) ** 2 + (pos.current.y - 50) ** 2;
-    const prevDist = Math.sqrt(prevDistSq);
+    const prevDx = pos.current.x - 50;
+    const prevDy = pos.current.y - 50;
+    const prevDistSq = prevDx * prevDx + prevDy * prevDy;
 
-    // Circular border check
-    if (dist > 48.5) {
-      const ratio = 48.5 / dist;
+    // Circular border check using squared distance
+    if (distSq > BORDER_RADIUS_SQ) {
+      const dist = Math.sqrt(distSq);
+      const ratio = BORDER_RADIUS / dist;
       fx = 50 + dx * ratio;
       fy = 50 + dy * ratio;
       vel.current = { x: 0, y: 0 };
     } else {
-      // Check ring collisions only when crossing
-      let collided = false;
+      // Check ring collisions more efficiently
+      const dist = Math.sqrt(distSq);
+      const prevDist = Math.sqrt(prevDistSq);
       
-      for (const ring of MAZE_RINGS) {
-        // Only check if we're crossing this ring's radius
-        const crossed = (prevDist <= ring.radius && dist > ring.radius) || 
-                       (prevDist >= ring.radius && dist < ring.radius);
+      // Only calculate angle once
+      const angle = fastAngle(dx, dy);
+
+      for (let i = 0; i < RING_RADII_SQ.length; i++) {
+        const ring = RING_RADII_SQ[i];
+        
+        // Check if crossing this ring
+        const crossed = (prevDist <= ring.r && dist > ring.r) || 
+                       (prevDist >= ring.r && dist < ring.r);
         
         if (!crossed) continue;
 
-        // Fast angle calculation
-        const angle = ((Math.atan2(dy, dx) * 180) / Math.PI + 360) % 360;
-        
         // Check if in gap
-        let inGap = false;
-        for (const gap of ring.gaps) {
-          if (angle >= gap.start && angle <= gap.end) {
-            inGap = true;
-            break;
-          }
-        }
-
-        if (!inGap) {
-          // Simple bounce back
-          const ratio = ring.radius / prevDist;
-          fx = 50 + (pos.current.x - 50) * ratio;
-          fy = 50 + (pos.current.y - 50) * ratio;
+        if (!isInGap(angle, ring.gaps)) {
+          // Collision - bounce back
+          const ratio = ring.r / prevDist;
+          fx = 50 + prevDx * ratio;
+          fy = 50 + prevDy * ratio;
           vel.current = { x: 0, y: 0 };
-          collided = true;
           break;
         }
       }
@@ -268,7 +262,7 @@ const Buzzer: React.FC = () => {
 
     pos.current = { x: fx, y: fy };
 
-    // Batch DOM update
+    // Batch DOM update with minimal precision
     if (ballRef.current) {
       ballRef.current.setAttribute('cx', fx.toFixed(1));
       ballRef.current.setAttribute('cy', fy.toFixed(1));
@@ -341,7 +335,6 @@ const Buzzer: React.FC = () => {
 
       {/* Main Game Arena */}
       <div
-        data-buzzer-container
         className="relative w-full max-w-[550px] touch-none cursor-none will-change-transform"
         onMouseMove={handlePointer}
         onTouchMove={handlePointer}
