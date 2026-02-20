@@ -62,15 +62,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [user]);
 
-  const fetchWalletBalance = async () => {
+  const fetchWalletBalance = React.useCallback(async () => {
     if (!user?.id) return;
-    const { data, success } = await walletService.getWallet(user.id);
-    console.log("AppContext: Fetched wallet data:", data);
-    if (success && data) {
-      setWalletBalance(data.balance);
-      setTotalPoints(data.points_balance || 0);
+    try {
+      const { data, success } = await walletService.getWallet(user.id);
+      console.log("AppContext: Fetched wallet data:", data);
+      if (success && data) {
+        setWalletBalance(data.balance);
+        setTotalPoints(data.points_balance || 0);
+        console.log("AppContext: Updated totalPoints to:", data.points_balance);
+      }
+    } catch (error) {
+      console.error("AppContext: Error fetching wallet:", error);
     }
-  };
+  }, [user?.id]);
 
   const fetchCart = async () => {
     const { data, success } = await cartService.getCart(user?.id || GUEST_USER_ID);
