@@ -14,12 +14,16 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .slides-app {
   position: relative;
-  width: 100%;
+  width: 100vw;
   min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
 }
 
 /* Container and Layout */
@@ -38,6 +42,7 @@ body {
   z-index: 10;
   width: 100%;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,6 +51,9 @@ body {
 /* Grid System */
 .fix-12-12 {
   width: 100%;
+  max-width: min(900px, 94vw);
+  margin: 0 auto;
+  padding: clamp(8px, 3vw, 24px);
 }
 
 .fix-10-12 {
@@ -136,73 +144,25 @@ p.tiny {
 }
 
 /* Utility Classes */
-.opacity-8 {
-  opacity: 0.8;
-}
+.opacity-8 { opacity: 0.8; }
+.opacity-6 { opacity: 0.6; }
+.opacity-4 { opacity: 0.4; }
+.uppercase  { text-transform: uppercase; }
+.bold       { font-weight: 700; }
+.small      { font-size: 0.875rem; }
+.wide       { width: 100%; }
 
-.opacity-6 {
-  opacity: 0.6;
-}
+.margin-top-2    { margin-top: 1rem; }
+.margin-top-3    { margin-top: 1.5rem; }
+.margin-top-5    { margin-top: 2.5rem; }
+.margin-top-6    { margin-top: 3rem; }
+.margin-bottom-2 { margin-bottom: 1rem; }
+.margin-bottom-3 { margin-bottom: 1.5rem; }
+.margin-bottom-6 { margin-bottom: 3rem; }
 
-.opacity-4 {
-  opacity: 0.4;
-}
-
-.uppercase {
-  text-transform: uppercase;
-}
-
-.bold {
-  font-weight: 700;
-}
-
-.small {
-  font-size: 0.875rem;
-}
-
-.wide {
-  width: 100%;
-}
-
-.margin-top-2 {
-  margin-top: 1rem;
-}
-
-.margin-top-3 {
-  margin-top: 1.5rem;
-}
-
-.margin-top-5 {
-  margin-top: 2.5rem;
-}
-
-.margin-top-6 {
-  margin-top: 3rem;
-}
-
-.margin-bottom-2 {
-  margin-bottom: 1rem;
-}
-
-.margin-bottom-3 {
-  margin-bottom: 1.5rem;
-}
-
-.margin-bottom-6 {
-  margin-bottom: 3rem;
-}
-
-.left {
-  text-align: left;
-}
-
-.right {
-  text-align: right;
-}
-
-.bottom {
-  align-self: flex-end;
-}
+.left   { text-align: left; }
+.right  { text-align: right; }
+.bottom { align-self: flex-end; }
 
 /* Buttons */
 .button {
@@ -217,41 +177,17 @@ p.tiny {
   cursor: pointer;
   transition: all 0.3s ease;
   outline: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.button.blue {
-  background: #2196F3;
-  color: #fff;
-}
-
-.button.green {
-  background: #4CAF50;
-  color: #fff;
-}
-
-.button.white {
-  background: #fff;
-  color: #202020;
-}
-
-.button.hollow {
-  background: transparent;
-  border: 2px solid #fff;
-  color: #fff;
-  margin-right: 10px;
-}
-
-.button.gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.button.blue.gradient {
-  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-}
-
-.button.green.gradient {
-  background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
-}
+.button.blue     { background: #2196F3; color: #fff; }
+.button.green    { background: #4CAF50; color: #fff; }
+.button.white    { background: #fff; color: #202020; }
+.button.hollow   { background: transparent; border: 2px solid #fff; color: #fff; margin-right: 10px; }
+.button.gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.button.blue.gradient  { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
+.button.green.gradient { background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); }
 
 .button:hover {
   transform: translateY(-2px);
@@ -259,42 +195,17 @@ p.tiny {
 }
 
 .button.play {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 80px; height: 80px;
+  border-radius: 50%; padding: 0;
+  display: flex; align-items: center; justify-content: center;
   margin: 0 auto;
 }
-
-.button.play.small {
-  width: 60px;
-  height: 60px;
-}
-
-.button.play svg {
-  width: 24px;
-  height: 24px;
-}
-
-.button.wide {
-  width: 100%;
-}
-
-.button.crop {
-  border-radius: 0;
-}
-
-.button.cropSides {
-  border-radius: 0;
-}
-
-.button.cropBottom {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
+.button.play.small    { width: 60px; height: 60px; }
+.button.play svg      { width: 24px; height: 24px; }
+.button.wide          { width: 100%; }
+.button.crop          { border-radius: 0; }
+.button.cropSides     { border-radius: 0; }
+.button.cropBottom    { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
 
 /* Forms */
 .slides-form {
@@ -317,29 +228,17 @@ p.tiny {
   backdrop-filter: blur(10px);
 }
 
-.slides-form input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
+.slides-form input::placeholder { color: rgba(255, 255, 255, 0.6); }
 .slides-form input:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.6);
   background: rgba(255, 255, 255, 0.15);
 }
+.slides-form button { width: 100%; margin-top: 10px; }
 
-.slides-form button {
-  width: 100%;
-  margin-top: 10px;
-}
-
-/* Shadows */
-.shadow {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-}
-
-.rounded {
-  border-radius: 6px;
-}
+/* Shadows & Rounded */
+.shadow  { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); }
+.rounded { border-radius: 6px; }
 
 /* Sidebar */
 .sidebar-overlay {
@@ -350,89 +249,245 @@ p.tiny {
   backdrop-filter: blur(4px);
 }
 
-/* Dark Mode Styles */
-.dark {
-  --fruit-bg: #003e31;
-  --fruit-surface: #004d3e;
+/* Dark Mode */
+.dark { --fruit-bg: #003e31; --fruit-surface: #004d3e; }
+.dark .bg-fruit-bg      { background-color: var(--fruit-bg); }
+.dark .bg-fruit-surface { background-color: var(--fruit-surface); }
+
+/* Touch Global */
+button, a, [role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.dark .bg-fruit-bg {
-  background-color: var(--fruit-bg);
+/* ============================================================
+   SLIDES SYSTEM — الإصلاح الأساسي
+   ============================================================ */
+
+/* الـ Slide Container يحتل كامل الشاشة */
+.slides-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
-.dark .bg-fruit-surface {
-  background-color: var(--fruit-surface);
+/* ── كل Slide مخفي بالكامل افتراضياً ─── */
+.slide {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+  z-index: 1;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .container {
-    padding: 0 30px;
-  }
+/* ── الـ Slide المفعّل فقط يظهر ─────── */
+.slide.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: all !important;
+  z-index: 2 !important;
+}
 
-  h1 {
-    font-size: 2.5rem;
-  }
+/* ── fallback: children مباشرة لـ slides-container ─── */
+.slides-container > div {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.6s ease, visibility 0.6s ease !important;
+  z-index: 1 !important;
+}
 
-  h1.huge {
-    font-size: 3.5rem;
-  }
+.slides-container > div.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: all !important;
+  z-index: 2 !important;
+}
 
-  .fix-7-12,
-  .fix-6-12,
-  .fix-5-12 {
-    width: 100%;
+/* ── نقاط التنقل الجانبية ────────────────────────────────── */
+nav.side.pole {
+  position: fixed;
+  right: clamp(8px, 2vw, 20px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+}
+
+/* ── Progress Bar ────────────────────────────────────────── */
+.progress-bar-wrapper,
+[class*="ProgressBar"] {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+}
+
+/* ── Bottom Navigation ───────────────────────────────────── */
+.fixed.bottom-0 {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ============================================================
+   HERO ZOOM SLIDE (id=0)
+   ⚠️ يجب أن يكون position: absolute وليس fixed
+      حتى يبقى داخل الـ Slide ولا يطغى على باقي الـ Slides
+   ============================================================ */
+.hero-zoom-wrapper {
+  position: absolute !important; /* ← المفتاح: absolute وليس fixed */
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  background: #000;
+}
+
+.hero-zoom__scene,
+.hero-zoom__starship {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  object-position: center;
+}
+
+@media (min-width: 769px) {
+  .hero-zoom__scene,
+  .hero-zoom__starship {
+    object-fit: fill;
   }
 }
 
 @media (max-width: 768px) {
-  .container {
-    padding: 0 20px;
+  .hero-zoom__scene,
+  .hero-zoom__starship {
+    object-fit: cover;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
   }
+}
 
-  h1 {
-    font-size: 2rem;
-  }
-
-  h1.huge {
-    font-size: 2.5rem;
-  }
-
-  .col-6-12,
-  .col-5-12 {
+@media (max-width: 480px) {
+  .hero-zoom__scene,
+  .hero-zoom__starship {
+    object-fit: cover;
     width: 100%;
+    height: 100%;
+    min-width: 100vw;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
+}
 
-  .button {
-    padding: 12px 25px;
-    font-size: 14px;
+/* ── Hero Title ──────────────────────────────────────────── */
+.hero-zoom__title {
+  font-size: clamp(1.5rem, 8vw, 8rem);
+}
+
+@media (max-width: 768px) {
+  .hero-zoom__title {
+    font-size: clamp(1.2rem, 7vw, 3rem) !important;
+    white-space: normal !important;
+    max-width: 85% !important;
+    line-height: 1.15 !important;
   }
+  .hero-zoom__buttons {
+    bottom: 5% !important;
+  }
+}
+
+@media (max-width: 375px) {
+  .hero-zoom__title {
+    font-size: clamp(1rem, 6.5vw, 2.5rem) !important;
+    max-width: 90% !important;
+  }
+  .hero-zoom__buttons { bottom: 4% !important; }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-zoom__title {
+    font-size: clamp(1rem, 5vh, 2rem) !important;
+    top: 45% !important;
+  }
+  .hero-zoom__buttons {
+    bottom: 3% !important;
+    flex-direction: row !important;
+    gap: 0.5rem !important;
+  }
+}
+
+/* ============================================================
+   SLIDES CONTENT — محتوى باقي الـ Slides
+   ============================================================ */
+
+/* Viewport height utility */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.h-screen {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ── Responsive Grids ────────────────────────────────────── */
+@media (max-width: 480px) {
+  .mobile-stack-stats {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .mobile-tight-text {
+    font-size: 1.75rem !important;
+  }
+}
+
+/* ── iOS Safe Area ───────────────────────────────────────── */
+@supports (padding: max(0px)) {
+  .bottom-nav-safe {
+    padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* ── Tablet ──────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .container { padding: 0 30px; }
+  h1         { font-size: 2.5rem; }
+  h1.huge    { font-size: 3.5rem; }
+  .fix-7-12, .fix-6-12, .fix-5-12 { width: 100%; }
+}
+
+/* ── Mobile ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .container { padding: 0 20px; }
+  h1         { font-size: 2rem; }
+  h1.huge    { font-size: 2.5rem; }
+  .col-6-12, .col-5-12 { width: 100%; }
+  .button    { padding: 12px 25px; font-size: 14px; }
 
   .app-store-buttons {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
-
-  .app-store-buttons .button {
-    margin-right: 0;
-  }
+  .app-store-buttons .button { margin-right: 0; }
 }
 
+/* ── Small Mobile ────────────────────────────────────────── */
 @media (max-width: 436px) {
-  h1 {
-    font-size: 1.75rem;
-  }
-
-  h1.huge {
-    font-size: 2rem;
-  }
-
-  p {
-    font-size: 1rem;
-  }
-
-  .container {
-    padding: 0 15px;
-  }
+  h1      { font-size: 1.75rem; }
+  h1.huge { font-size: 2rem; }
+  p       { font-size: 1rem; }
+  .container { padding: 0 15px; }
 }
