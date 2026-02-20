@@ -10,21 +10,21 @@ import { useNavigate } from 'react-router-dom';
 const DAILY_REWARD_PTS = 50;
 const DEVICE_KEY = 'atyab_device_buzzer_date';
 const WIN_RADIUS = 7.5;    // Optimized win detection
-const BALL_RADIUS = 2.8;
-const FRICTION = 0.90;     // Increased from 0.85 for stability
-const SENSITIVITY = 0.25;  // Reduced from 0.28 for less jerky movement
-const MAX_SPEED = 2.8;     // Reduced from 3.5 for smoother gameplay
+const BALL_RADIUS = 2.5;   // ✅ مُقَلَّل من 2.8 لتسهيل المرور
+const FRICTION = 0.92;     // ✅ زيادة قليلة من 0.90 لتحسين التحكم
+const SENSITIVITY = 0.26;  // ✅ زيادة طفيفة من 0.25 للاستجابة الأفضل
+const MAX_SPEED = 3.0;     // ✅ زيادة من 2.8 للحركة أسرع قليلاً
 
 // ─── Ring layout ─────────────────────────────────────────────────────────────
 const MAZE_RINGS = [
-  { radius: 45, gaps: [{ start: 260, end: 280 }] },
-  { radius: 40, gaps: [{ start: 80, end: 110 }] },
-  { radius: 35, gaps: [{ start: 300, end: 330 }] },
-  { radius: 30, gaps: [{ start: 170, end: 200 }] },
-  { radius: 25, gaps: [{ start: 10, end: 40 }] },
-  { radius: 20, gaps: [{ start: 220, end: 250 }] },
-  { radius: 15, gaps: [{ start: 120, end: 150 }] },
-  { radius: 10, gaps: [{ start: 340, end: 360 }, { start: 0, end: 10 }] },
+  { radius: 45, gaps: [{ start: 255, end: 285 }] },   // ✅ مُوَسَّع من 260-280 إلى 255-285
+  { radius: 40, gaps: [{ start: 75, end: 115 }] },    // ✅ مُوَسَّع من 80-110 إلى 75-115
+  { radius: 35, gaps: [{ start: 295, end: 335 }] },   // ✅ مُوَسَّع من 300-330 إلى 295-335
+  { radius: 30, gaps: [{ start: 165, end: 205 }] },   // ✅ مُوَسَّع من 170-200 إلى 165-205
+  { radius: 25, gaps: [{ start: 5, end: 45 }] },      // ✅ مُوَسَّع من 10-40 إلى 5-45
+  { radius: 20, gaps: [{ start: 215, end: 255 }] },   // ✅ مُوَسَّع من 220-250 إلى 215-255
+  { radius: 15, gaps: [{ start: 115, end: 155 }] },   // ✅ مُوَسَّع من 120-150 إلى 115-155
+  { radius: 10, gaps: [{ start: 335, end: 365 }, { start: -5, end: 15 }] },  // ✅ مُوَسَّع الفجوات
 ];
 
 // Pre-calculate radii squared for faster distance checks
@@ -82,11 +82,13 @@ function fastAngle(dx: number, dy: number): number {
   return ((Math.atan2(dy, dx) * 180) / Math.PI + 360) % 360;
 }
 
-// Check if angle is in any gap
+// Check if angle is in any gap with extra tolerance
 function isInGap(angle: number, gaps: Array<{ start: number; end: number }>): boolean {
+  const tolerance = 2; // ✅ إضافة تسامح 2 درجة لتسهيل المرور
+  
   for (let i = 0; i < gaps.length; i++) {
     const gap = gaps[i];
-    if (angle >= gap.start && angle <= gap.end) {
+    if (angle >= gap.start - tolerance && angle <= gap.end + tolerance) {
       return true;
     }
   }
@@ -248,13 +250,14 @@ const Buzzer: React.FC = () => {
         
         if (!crossed) continue;
 
-        // Check if in gap
+        // Check if in gap with tolerance
         if (!isInGap(angle, ring.gaps)) {
-          // Collision - bounce back
-          const ratio = ring.r / prevDist;
+          // Collision - bounce back smoothly with damping
+          const ratio = ring.r / (prevDist || 1);
           fx = 50 + prevDx * ratio;
           fy = 50 + prevDy * ratio;
-          vel.current = { x: 0, y: 0 };
+          vel.current.x *= 0.5;  // ✅ تقليل السرعة عند الاصطدام لسلاسة أكثر
+          vel.current.y *= 0.5;
           break;
         }
       }
