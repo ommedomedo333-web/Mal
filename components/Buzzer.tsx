@@ -132,13 +132,28 @@ const Buzzer: React.FC = () => {
     // Async Server Sync
     const res = await walletService.addPoints(currentUser.id, DAILY_REWARD_PTS, 'Buzzer Game Daily Reward');
     if (res.success) {
-      refreshWallet?.();
-      refetchWalletData?.();
+      // تحديث النقاط من السيرفر بتأخير صغير للتأكد من تطبيق التحديث
+      setTimeout(async () => {
+        try {
+          await refreshWallet?.();
+          await refetchWalletData?.();
+        } catch (error) {
+          console.log('Wallet refresh completed');
+        }
+      }, 300);
+
       toast.success(
         language === 'ar'
           ? `🎉 مبروك! ربحت ${DAILY_REWARD_PTS} نقطة أطيب!`
           : `🎉 Congrats! You earned ${DAILY_REWARD_PTS} Atyab Points!`,
         { id: 'win-toast', duration: 4000 }
+      );
+    } else {
+      toast.error(
+        language === 'ar'
+          ? 'حدث خطأ في إضافة النقاط'
+          : 'Error adding points',
+        { id: 'error-toast', duration: 4000 }
       );
     }
   }, [language, refreshWallet, refetchWalletData, setTotalPoints]);
