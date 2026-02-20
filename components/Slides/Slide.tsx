@@ -9,19 +9,17 @@ interface SlideProps {
 }
 
 const Slide: React.FC<SlideProps> = ({ id, backgroundImage, children, active }) => {
-  const activeClass = active ? 'active' : '';
-
   return (
-    <section className={`slide fade-6 kenBurns ${activeClass}`}>
+    <section className={`slide fade-6 kenBurns${active ? ' active' : ''}`}>
+
+      {/* المحتوى يملأ الشاشة بالكامل — بدون wrapper إضافي */}
       <div className="content">
-        <div className="container">
-          <div className="wrap">
-            {children}
-          </div>
-        </div>
+        {children}
       </div>
-      <div 
-        className="background" 
+
+      {/* الخلفية */}
+      <div
+        className="background"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       />
     </section>
