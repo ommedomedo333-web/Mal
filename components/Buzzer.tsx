@@ -1,72 +1,22 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { walletService } from '../src/supabase/supabase-service';
 import { useAppContext } from '../contexts/AppContext';
 import { useWalletContext } from '../src/supabase/context-providers';
-import { Lock, LogIn, Info, Target, Zap } from 'lucide-react';
+import { Lock, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+const FRUITS = ["🍎","🍌","🍊","🍇","🍓","🍑","🥝","🍍","🥭","🍒","🍋"];
+const TOTAL = 50;
+const W = 380;
+const H = 580;
+const BW = 90;
+const BH = 44;
 const DAILY_REWARD_PTS = 50;
-const DEVICE_KEY = 'atyab_device_buzzer_date';
-const WIN_RADIUS = 7.5;    // Optimized win detection
-const BALL_RADIUS = 2.5;   // ✅ مُقَلَّل من 2.8 لتسهيل المرور
-const FRICTION = 0.92;     // ✅ زيادة قليلة من 0.90 لتحسين التحكم
-const SENSITIVITY = 0.26;  // ✅ زيادة طفيفة من 0.25 للاستجابة الأفضل
-const MAX_SPEED = 3.0;     // ✅ زيادة من 2.8 للحركة أسرع قليلاً
-
-// ─── Ring layout ─────────────────────────────────────────────────────────────
-const MAZE_RINGS = [
-  { radius: 45, gaps: [{ start: 255, end: 285 }] },   // ✅ مُوَسَّع من 260-280 إلى 255-285
-  { radius: 40, gaps: [{ start: 75, end: 115 }] },    // ✅ مُوَسَّع من 80-110 إلى 75-115
-  { radius: 35, gaps: [{ start: 295, end: 335 }] },   // ✅ مُوَسَّع من 300-330 إلى 295-335
-  { radius: 30, gaps: [{ start: 165, end: 205 }] },   // ✅ مُوَسَّع من 170-200 إلى 165-205
-  { radius: 25, gaps: [{ start: 5, end: 45 }] },      // ✅ مُوَسَّع من 10-40 إلى 5-45
-  { radius: 20, gaps: [{ start: 215, end: 255 }] },   // ✅ مُوَسَّع من 220-250 إلى 215-255
-  { radius: 15, gaps: [{ start: 115, end: 155 }] },   // ✅ مُوَسَّع من 120-150 إلى 115-155
-  { radius: 10, gaps: [{ start: 335, end: 365 }, { start: -5, end: 15 }] },  // ✅ مُوَسَّع الفجوات
-];
-
-// Pre-calculate radii squared for faster distance checks
-const RING_RADII_SQ = MAZE_RINGS.map(r => ({
-  r: r.radius,
-  rSq: r.radius * r.radius,
-  gaps: r.gaps
-}));
-
-const WIN_RADIUS_SQ = WIN_RADIUS * WIN_RADIUS;
-const BORDER_RADIUS = 48.5;
-const BORDER_RADIUS_SQ = BORDER_RADIUS * BORDER_RADIUS;
-
-function buildRingPaths() {
-  const paths: string[] = [];
-  MAZE_RINGS.forEach((ring) => {
-    const sortedGaps = [...ring.gaps].sort((a, b) => a.start - b.start);
-    let current = 0;
-    const segs: { start: number; end: number }[] = [];
-    sortedGaps.forEach((gap) => {
-      if (gap.start > current) segs.push({ start: current, end: gap.start });
-      current = gap.end;
-    });
-    if (current < 360) segs.push({ start: current, end: 360 });
-
-    segs.forEach((seg) => {
-      const s = (seg.start * Math.PI) / 180;
-      const e = (seg.end * Math.PI) / 180;
-      const x1 = 50 + Math.cos(s) * ring.radius;
-      const y1 = 50 + Math.sin(s) * ring.radius;
-      const x2 = 50 + Math.cos(e) * ring.radius;
-      const y2 = 50 + Math.sin(e) * ring.radius;
-      const la = seg.end - seg.start > 180 ? 1 : 0;
-      paths.push(`M ${x1} ${y1} A ${ring.radius} ${ring.radius} 0 ${la} 1 ${x2} ${y2}`);
-    });
-  });
-  return paths;
-}
-const RING_PATHS = buildRingPaths();
+const DEVICE_KEY = 'atyab_device_fruit_date';
 
 function getTodayStr() {
-  return new Date().toLocaleDateString('en-CA'); // Stable ISO-like date
+  return new Date().toLocaleDateString('en-CA');
 }
 
 function isDeviceLockedToday() {
@@ -77,81 +27,116 @@ function lockDeviceToday() {
   localStorage.setItem(DEVICE_KEY, getTodayStr());
 }
 
-// Fast angle calculation without atan2
-function fastAngle(dx: number, dy: number): number {
-  return ((Math.atan2(dy, dx) * 180) / Math.PI + 360) % 360;
+function rand(a: number, b: number) {
+  return a + Math.random() * (b - a);
 }
 
-// Check if angle is in any gap with extra tolerance
-function isInGap(angle: number, gaps: Array<{ start: number; end: number }>): boolean {
-  const tolerance = 2; // ✅ إضافة تسامح 2 درجة لتسهيل المرور
-  
-  for (let i = 0; i < gaps.length; i++) {
-    const gap = gaps[i];
-    if (angle >= gap.start - tolerance && angle <= gap.end + tolerance) {
-      return true;
-    }
-  }
-  return false;
+interface Fruit {
+  id: number;
+  emoji: string;
+  x: number;
+  y: number;
+  size: number;
+  spd: number;
+  rot: number;
+  rotV: number;
+  done: boolean;
+  hit: boolean;
 }
 
-const Buzzer: React.FC = () => {
+interface Particle {
+  id: string;
+  emoji: string;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+  size: number;
+}
+
+function mkFruit(id: number, ms: number): Fruit {
+  const base = 1.8 + ms * 0.0018;
+  return {
+    id,
+    emoji: FRUITS[Math.floor(Math.random() * FRUITS.length)],
+    x: rand(14, W - 50),
+    y: -50,
+    size: rand(30, 46),
+    spd: Math.min(rand(base, base + 2.6), 13),
+    rot: rand(-25, 25),
+    rotV: rand(-2.5, 2.5),
+    done: false,
+    hit: false,
+  };
+}
+
+function mkParticles(cx: number, cy: number, emoji: string): Particle[] {
+  return Array.from({ length: 9 }, (_, i) => ({
+    id: `${Date.now()}_${i}`,
+    emoji,
+    x: cx,
+    y: cy,
+    vx: rand(-5, 5),
+    vy: rand(-7, -2),
+    life: 1,
+    size: rand(18, 28),
+  }));
+}
+
+const FruitGame: React.FC = () => {
   const { user, language, refreshWallet, setTotalPoints } = useAppContext() as any;
   const { refetch: refetchWalletData } = useWalletContext();
   const navigate = useNavigate();
 
+  const [phase, setPhase] = useState<"idle" | "playing" | "over">("idle");
+  const [bx, setBx] = useState(W / 2 - BW / 2);
+  const [fruits, setFruits] = useState<Fruit[]>([]);
+  const [parts, setParts] = useState<Particle[]>([]);
+  const [caught, setCaught] = useState(0);
+  const [missed, setMissed] = useState(0);
+  const [spawned, setSpawned] = useState(0);
+  const [flash, setFlash] = useState(false);
+  const [combo, setCombo] = useState(0);
+  const [toast_, setToast] = useState<{ emoji: string; key: number } | null>(null);
   const [hasWonToday, setHasWonToday] = useState(() => isDeviceLockedToday());
-  const [winAnim, setWinAnim] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(false);
 
-  // High-performance refs
-  const svgRef = useRef<SVGSVGElement>(null);
-  const ballRef = useRef<SVGCircleElement>(null);
-  const rafRef = useRef<number>(0);
-  const pos = useRef({ x: 97, y: 50 });
-  const vel = useRef({ x: 0, y: 0 });
-  const wonRef = useRef(isDeviceLockedToday());
+  const bxR = useRef(W / 2 - BW / 2);
+  const fruitsR = useRef<Fruit[]>([]);
+  const partsR = useRef<Particle[]>([]);
+  const caughtR = useRef(0);
+  const missedR = useRef(0);
+  const spawnedR = useRef(0);
+  const comboR = useRef(0);
+  const phaseR = useRef<"idle" | "playing" | "over">("idle");
+  const elapsedR = useRef(0);
+  const spawnTR = useRef(0);
+  const lastTsR = useRef<number | null>(null);
+  const rafR = useRef<number>(0);
+  const areaR = useRef<HTMLDivElement>(null);
   const userRef = useRef(user);
+  const wonRef = useRef(hasWonToday);
 
-  useEffect(() => { userRef.current = user; }, [user]);
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
-  const handlePointer = useCallback((e: React.TouchEvent | React.MouseEvent) => {
-    if (!userRef.current || wonRef.current || !svgRef.current) return;
-
-    const svg = svgRef.current;
-    const pt = svg.createSVGPoint();
-
-    if ('touches' in e) {
-      pt.x = e.touches[0].clientX;
-      pt.y = e.touches[0].clientY;
-    } else {
-      pt.x = (e as React.MouseEvent).clientX;
-      pt.y = (e as React.MouseEvent).clientY;
-    }
-
-    const ctm = svg.getScreenCTM();
-    if (!ctm) return;
-    const loc = pt.matrixTransform(ctm.inverse());
-
-    const dx = loc.x - pos.current.x;
-    const dy = loc.y - pos.current.y;
-    const distSq = dx * dx + dy * dy;
-
-    // Skip if movement is too small (dead zone)
-    if (distSq > 0.04) { // 0.2^2
-      vel.current.x = Math.min(Math.max(dx * SENSITIVITY, -MAX_SPEED), MAX_SPEED);
-      vel.current.y = Math.min(Math.max(dy * SENSITIVITY, -MAX_SPEED), MAX_SPEED);
-    }
+  const moveBx = useCallback((clientX: number) => {
+    if (!areaR.current) return;
+    const rect = areaR.current.getBoundingClientRect();
+    const scale = W / rect.width;
+    const nx = Math.max(0, Math.min(W - BW, (clientX - rect.left) * scale - BW / 2));
+    bxR.current = nx;
+    setBx(nx);
   }, []);
 
-  const handleWin = useCallback(async () => {
+  const handleGameEnd = useCallback(async () => {
     if (wonRef.current) return;
     wonRef.current = true;
-
-    // Immediate Local Sync
-    lockDeviceToday();
     setHasWonToday(true);
-    setWinAnim(true);
+
+    // Local update
+    lockDeviceToday();
     if (typeof setTotalPoints === 'function') {
       setTotalPoints((prev: number) => prev + DAILY_REWARD_PTS);
     }
@@ -159,10 +144,14 @@ const Buzzer: React.FC = () => {
     const currentUser = userRef.current;
     if (!currentUser?.id) return;
 
-    // Async Server Sync
-    const res = await walletService.addPoints(currentUser.id, DAILY_REWARD_PTS, 'Buzzer Game Daily Reward');
+    // Server sync
+    const res = await walletService.addPoints(
+      currentUser.id,
+      DAILY_REWARD_PTS,
+      'Fruit Catcher Game Daily Reward'
+    );
+
     if (res.success) {
-      // تحديث النقاط من السيرفر بتأخير صغير للتأكد من تطبيق التحديث
       setTimeout(async () => {
         try {
           await refreshWallet?.();
@@ -176,249 +165,460 @@ const Buzzer: React.FC = () => {
         language === 'ar'
           ? `🎉 مبروك! ربحت ${DAILY_REWARD_PTS} نقطة أطيب!`
           : `🎉 Congrats! You earned ${DAILY_REWARD_PTS} Atyab Points!`,
-        { id: 'win-toast', duration: 4000 }
-      );
-    } else {
-      toast.error(
-        language === 'ar'
-          ? 'حدث خطأ في إضافة النقاط'
-          : 'Error adding points',
-        { id: 'error-toast', duration: 4000 }
+        { id: 'fruit-game-win', duration: 4000 }
       );
     }
   }, [language, refreshWallet, refetchWalletData, setTotalPoints]);
 
-  const loop = useCallback(() => {
-    if (wonRef.current) return;
-
-    // Apply friction
-    vel.current.x *= FRICTION;
-    vel.current.y *= FRICTION;
-
-    // Early exit if velocity is negligible
-    if (Math.abs(vel.current.x) < 0.005 && Math.abs(vel.current.y) < 0.005) {
-      vel.current = { x: 0, y: 0 };
-      // Still update DOM for final position
-      if (ballRef.current) {
-        ballRef.current.setAttribute('cx', pos.current.x.toFixed(1));
-        ballRef.current.setAttribute('cy', pos.current.y.toFixed(1));
-      }
-      rafRef.current = requestAnimationFrame(loop);
-      return;
-    }
-
-    const nx = pos.current.x + vel.current.x;
-    const ny = pos.current.y + vel.current.y;
-
-    const dx = nx - 50;
-    const dy = ny - 50;
-    
-    const distSq = dx * dx + dy * dy;
-
-    // Win check using squared distance (faster)
-    if (distSq < WIN_RADIUS_SQ) {
-      handleWin();
-      return;
-    }
-
-    let fx = nx, fy = ny;
-    const prevDx = pos.current.x - 50;
-    const prevDy = pos.current.y - 50;
-    const prevDistSq = prevDx * prevDx + prevDy * prevDy;
-
-    // Circular border check using squared distance
-    if (distSq > BORDER_RADIUS_SQ) {
-      const dist = Math.sqrt(distSq);
-      const ratio = BORDER_RADIUS / dist;
-      fx = 50 + dx * ratio;
-      fy = 50 + dy * ratio;
-      vel.current = { x: 0, y: 0 };
-    } else {
-      // Check ring collisions more efficiently
-      const dist = Math.sqrt(distSq);
-      const prevDist = Math.sqrt(prevDistSq);
-      
-      // Only calculate angle once
-      const angle = fastAngle(dx, dy);
-
-      for (let i = 0; i < RING_RADII_SQ.length; i++) {
-        const ring = RING_RADII_SQ[i];
-        
-        // Check if crossing this ring
-        const crossed = (prevDist <= ring.r && dist > ring.r) || 
-                       (prevDist >= ring.r && dist < ring.r);
-        
-        if (!crossed) continue;
-
-        // Check if in gap with tolerance
-        if (!isInGap(angle, ring.gaps)) {
-          // Collision - bounce back smoothly with damping
-          const ratio = ring.r / (prevDist || 1);
-          fx = 50 + prevDx * ratio;
-          fy = 50 + prevDy * ratio;
-          vel.current.x *= 0.5;  // ✅ تقليل السرعة عند الاصطدام لسلاسة أكثر
-          vel.current.y *= 0.5;
-          break;
-        }
-      }
-    }
-
-    pos.current = { x: fx, y: fy };
-
-    // Batch DOM update with minimal precision
-    if (ballRef.current) {
-      ballRef.current.setAttribute('cx', fx.toFixed(1));
-      ballRef.current.setAttribute('cy', fy.toFixed(1));
-    }
-
-    rafRef.current = requestAnimationFrame(loop);
-  }, [handleWin]);
+  const start = useCallback(() => {
+    fruitsR.current = [];
+    partsR.current = [];
+    caughtR.current = 0;
+    missedR.current = 0;
+    spawnedR.current = 0;
+    comboR.current = 0;
+    elapsedR.current = 0;
+    spawnTR.current = 0;
+    lastTsR.current = null;
+    bxR.current = W / 2 - BW / 2;
+    setBx(W / 2 - BW / 2);
+    setFruits([]);
+    setParts([]);
+    setCaught(0);
+    setMissed(0);
+    setSpawned(0);
+    setCombo(0);
+    setToast(null);
+    setFlash(false);
+    phaseR.current = "playing";
+    setPhase("playing");
+  }, []);
 
   useEffect(() => {
-    if (user && !hasWonToday) {
-      rafRef.current = requestAnimationFrame(loop);
+    if (phase !== "playing") {
+      if (rafR.current) cancelAnimationFrame(rafR.current);
+      return;
     }
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [user, hasWonToday, loop]);
+
+    function loop(ts: number) {
+      if (phaseR.current !== "playing") return;
+      if (!lastTsR.current) lastTsR.current = ts;
+      const dt = Math.min((ts - lastTsR.current) / 16.67, 3);
+      lastTsR.current = ts;
+      elapsedR.current += dt * 16.67;
+      spawnTR.current += dt;
+
+      const interval = Math.max(22, 60 - elapsedR.current * 0.022) / 16.67;
+      if (spawnedR.current < TOTAL && spawnTR.current >= interval) {
+        spawnTR.current = 0;
+        fruitsR.current = [...fruitsR.current, mkFruit(spawnedR.current, elapsedR.current)];
+        spawnedR.current++;
+      }
+
+      const bLeft = bxR.current;
+      const bTop = H - BH - 12;
+      let nc = 0,
+        nm = 0;
+      const newParts: Particle[] = [];
+      let hitEmoji: string | null = null;
+
+      fruitsR.current = fruitsR.current.map((f) => {
+        if (f.done) return f;
+        const ny = f.y + f.spd * dt;
+        const nr = f.rot + f.rotV * dt;
+        const fcx = f.x + f.size / 2;
+
+        if (ny + f.size >= bTop && ny <= bTop + BH && fcx >= bLeft && fcx <= bLeft + BW) {
+          nc++;
+          comboR.current++;
+          newParts.push(...mkParticles(fcx, bTop, f.emoji));
+          hitEmoji = f.emoji;
+          return { ...f, y: ny, rot: nr, done: true, hit: true };
+        }
+        if (ny > H + 10) {
+          nm++;
+          comboR.current = 0;
+          return { ...f, y: ny, done: true, hit: false };
+        }
+        return { ...f, y: ny, rot: nr };
+      });
+
+      partsR.current = [
+        ...partsR.current.filter((p) => p.life > 0.05),
+        ...newParts,
+      ].map((p) => ({
+        ...p,
+        x: p.x + p.vx,
+        y: p.y + p.vy,
+        vy: p.vy + 0.35,
+        life: p.life - 0.045,
+      }));
+
+      caughtR.current += nc;
+      missedR.current += nm;
+
+      if (nc > 0) {
+        setFlash(true);
+        setToast({ emoji: hitEmoji || '🎉', key: ts });
+        setTimeout(() => setFlash(false), 150);
+      }
+
+      setFruits([...fruitsR.current]);
+      setParts([...partsR.current]);
+      setCaught(caughtR.current);
+      setMissed(missedR.current);
+      setSpawned(spawnedR.current);
+      setCombo(comboR.current);
+
+      if (spawnedR.current >= TOTAL && fruitsR.current.every((f) => f.done)) {
+        phaseR.current = "over";
+        setPhase("over");
+        handleGameEnd();
+        return;
+      }
+      rafR.current = requestAnimationFrame(loop);
+    }
+
+    rafR.current = requestAnimationFrame(loop);
+    return () => {
+      if (rafR.current) cancelAnimationFrame(rafR.current);
+    };
+  }, [phase, handleGameEnd]);
 
   if (!user) {
     return (
-      <div className="relative w-full aspect-square max-w-[550px] mx-auto bg-black/40 rounded-[60px] border-4 border-white/5 flex flex-col items-center justify-center p-8 backdrop-blur-xl shadow-3xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-fruit-primary/20 to-transparent opacity-40" />
-        <Lock size={60} className="text-fruit-primary mb-6 animate-bounce" />
-        <h2 className="text-white font-black text-2xl mb-2 text-center">{language === 'ar' ? 'للمسجلين فقط' : 'Members Only'}</h2>
-        <p className="text-white/40 text-sm mb-8 font-medium text-center">
-          {language === 'ar' ? `سجل دخول لتربح ${DAILY_REWARD_PTS} نقطة أطيب يومياً` : `Sign in to earn ${DAILY_REWARD_PTS} Atyab Points daily`}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '24px',
+        padding: '32px',
+        textAlign: 'center',
+      }}>
+        <Lock size={60} style={{ color: '#10b981', animation: 'bounce 1s infinite' }} />
+        <h2 style={{ color: '#fff', fontSize: '24px', fontWeight: 'bold' }}>
+          {language === 'ar' ? 'للمسجلين فقط' : 'Members Only'}
+        </h2>
+        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>
+          {language === 'ar'
+            ? `سجل دخول لتربح ${DAILY_REWARD_PTS} نقطة أطيب يومياً`
+            : `Sign in to earn ${DAILY_REWARD_PTS} Atyab Points daily`}
         </p>
-        <button onClick={() => navigate('/login')} className="flex items-center gap-3 px-10 py-5 bg-fruit-primary text-white rounded-[24px] font-black text-lg shadow-xl shadow-fruit-primary/30 active:scale-95 transition-all">
-          <LogIn size={22} /> {language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
+        <button
+          onClick={() => navigate('/login')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '12px 24px',
+            backgroundColor: '#10b981',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '16px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+          }}
+        >
+          <LogIn size={20} />
+          {language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
         </button>
       </div>
     );
   }
 
+  const points = Math.round((caught / TOTAL) * DAILY_REWARD_PTS);
+  const pct = Math.round((caught / TOTAL) * 100);
+  const stars = caught >= 48 ? 3 : caught >= 35 ? 2 : caught >= 20 ? 1 : 0;
+  const active = fruits.filter((f) => !f.done);
+
   return (
-    <div className="flex flex-col items-center gap-6 select-none">
-      {/* Header Info */}
-      <div className="flex items-center justify-between w-full max-w-[550px] px-4">
-        <button
-          onClick={() => setShowInstructions(!showInstructions)}
-          className="p-3 bg-white/5 border border-white/10 rounded-2xl text-white/60 hover:text-white transition-colors"
-        >
-          <Info size={24} />
-        </button>
+    <div
+      style={{
+        minHeight: '100dvh',
+        background: 'radial-gradient(ellipse at top,#061a0f 0%,#020c07 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '10px',
+        fontFamily: "'Cairo','Tajawal',sans-serif",
+        userSelect: 'none',
+      }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap');
+        .gt { font-size:clamp(20px,5.5vw,30px); font-weight:900; text-align:center;
+          background:linear-gradient(135deg,#10b981 0%,#34d399 45%,#f59e0b 100%);
+          -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+          letter-spacing:-.02em; margin-bottom:2px; }
+        .gsub { font-size:10px; color:rgba(255,255,255,.3); text-align:center;
+          letter-spacing:.1em; font-weight:700; margin-bottom:10px; text-transform:uppercase; }
+        .hud { display:flex; gap:8px; margin-bottom:8px; width:100%; max-width:${W}px; }
+        .hc { flex:1; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+          border-radius:14px; padding:7px 6px; text-align:center; backdrop-filter:blur(8px); }
+        .hn { font-size:20px; font-weight:900; line-height:1; color:#10b981; }
+        .hl { font-size:8px; color:rgba(255,255,255,.3); font-weight:700;
+          letter-spacing:.1em; text-transform:uppercase; margin-top:2px; }
+        .pt { width:100%; max-width:${W}px; margin-bottom:8px; }
+        .ptr { display:flex; justify-content:space-between; margin-bottom:3px; }
+        .ptx { font-size:10px; color:rgba(255,255,255,.35); font-weight:700; }
+        .ptrack { height:6px; background:rgba(255,255,255,.07); border-radius:99px; overflow:hidden; }
+        .pfill { height:100%; background:linear-gradient(90deg,#10b981,#34d399,#f59e0b);
+          border-radius:99px; transition:width .18s; box-shadow:0 0 10px rgba(16,185,129,.5); }
+        .arena { position:relative; width:${W}px; max-width:100%; height:${H}px;
+          border-radius:22px; background:rgba(0,0,0,.45);
+          border:1.5px solid rgba(16,185,129,.18); overflow:hidden; cursor:crosshair;
+          box-shadow:0 0 80px rgba(16,185,129,.06),inset 0 0 60px rgba(0,0,0,.4);
+          touch-action:none; }
+        .agrid { position:absolute; inset:0; pointer-events:none;
+          background:repeating-linear-gradient(0deg,transparent,transparent 38px,rgba(255,255,255,.012) 39px),
+                     repeating-linear-gradient(90deg,transparent,transparent 38px,rgba(255,255,255,.012) 39px); }
+        .aglow { position:absolute; inset:0; pointer-events:none;
+          background:radial-gradient(ellipse at 25% 15%,rgba(16,185,129,.07) 0%,transparent 55%),
+                     radial-gradient(ellipse at 75% 85%,rgba(245,158,11,.05) 0%,transparent 55%); }
+        .fi { position:absolute; pointer-events:none; will-change:transform; line-height:1;
+          filter:drop-shadow(0 3px 8px rgba(0,0,0,.5)); }
+        .bwrap { position:absolute; bottom:10px; pointer-events:none; width:${BW}px; }
+        .brim { width:100%; height:9px; background:linear-gradient(90deg,#059669,#10b981,#059669);
+          border-radius:5px 5px 0 0; border:1.5px solid #34d399;
+          box-shadow:0 0 12px rgba(16,185,129,.7); transition:box-shadow .1s; }
+        .brim.flash { box-shadow:0 0 35px rgba(16,185,129,1); }
+        .bbody { width:100%; height:${BH - 9}px;
+          background:linear-gradient(180deg,rgba(16,185,129,.3),rgba(16,185,129,.1));
+          border:1.5px solid rgba(16,185,129,.4); border-top:none;
+          border-radius:0 0 14px 14px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+        .part { position:absolute; pointer-events:none; line-height:1; will-change:transform,opacity; }
+        .combo { position:absolute; top:10px; right:10px; z-index:5;
+          background:rgba(245,158,11,.15); border:1px solid rgba(245,158,11,.4);
+          border-radius:10px; padding:5px 12px; font-size:12px; font-weight:900; color:#f59e0b;
+          backdrop-filter:blur(6px); animation:cpop .25s ease-out; }
+        @keyframes cpop { from{transform:scale(1.4)} to{transform:scale(1)} }
+        .toast { position:absolute; top:10px; left:12px; pointer-events:none; z-index:5;
+          animation:tup .5s ease-out forwards; }
+        @keyframes tup { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(-40px) scale(1.4)} }
+        .overlay { position:absolute; inset:0; display:flex; flex-direction:column;
+          align-items:center; justify-content:center; background:rgba(0,0,0,.78);
+          backdrop-filter:blur(12px); border-radius:22px; z-index:20; padding:20px; gap:10px; }
+        .otitle { font-size:clamp(24px,6.5vw,40px); font-weight:900; text-align:center; line-height:1.2; }
+        .osub { font-size:13px; color:rgba(255,255,255,.6); text-align:center; font-weight:700; line-height:1.7; }
+        .opoints { display:flex; align-items:center; gap:12px;
+          background:rgba(16,185,129,.12); border:1.5px solid rgba(16,185,129,.4);
+          border-radius:18px; padding:12px 28px; }
+        .opn { font-size:44px; font-weight:900; color:#10b981; line-height:1; }
+        .opl { font-size:12px; color:rgba(255,255,255,.5); font-weight:700; line-height:1.5; }
+        .stars { display:flex; gap:6px; }
+        .star { font-size:32px; filter:grayscale(1) opacity(.25); animation:sin .4s ease-out both; }
+        .star.on { filter:none; text-shadow:0 0 20px rgba(245,158,11,.8); }
+        .star:nth-child(1){animation-delay:.1s} .star:nth-child(2){animation-delay:.25s} .star:nth-child(3){animation-delay:.4s}
+        @keyframes sin { from{transform:scale(0) rotate(-40deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+        .btn { background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none;
+          border-radius:16px; padding:13px 36px; font-size:15px; font-weight:900;
+          font-family:'Cairo',sans-serif; cursor:pointer;
+          box-shadow:0 8px 28px rgba(16,185,129,.45); transition:all .2s;
+          -webkit-tap-highlight-color:transparent; }
+        .btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(16,185,129,.55)}
+        .btn:active{transform:scale(.95)}
+        .hint { font-size:10px; color:rgba(255,255,255,.22); text-align:center; font-weight:700;
+          margin-top:6px; letter-spacing:.05em; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+      `}</style>
 
-        <div className="text-center">
-          <h3 className={`font-black tracking-tight text-xl md:text-2xl uppercase ${hasWonToday ? 'text-green-400' : 'text-white'}`}>
-            {hasWonToday
-              ? (language === 'ar' ? `✓ ربحت ${DAILY_REWARD_PTS} نقطة` : `✓ WON ${DAILY_REWARD_PTS} PTS`)
-              : (language === 'ar' ? 'لعبة المتاهة' : 'THE MAZE')
-            }
-          </h3>
+      <div className="gt">🍉 {language === 'ar' ? 'فواكه الأطيب' : 'Fruit Catcher'}</div>
+      <div className="gsub">
+        {language === 'ar' ? 'اجمع ٥٠ فاكهة • اكسب ٥٠ نقطة أطيب' : 'Catch 50 fruits • Earn 50 points'}
+      </div>
+
+      {/* HUD */}
+      <div className="hud">
+        <div className="hc">
+          <div className="hn">{caught}</div>
+          <div className="hl">{language === 'ar' ? 'جُمعت' : 'Caught'}</div>
         </div>
-
-        <div className="p-3 bg-white/5 border border-white/10 rounded-2xl text-fruit-primary">
-          <Target size={24} />
+        <div className="hc">
+          <div className="hn" style={{ color: '#f59e0b' }}>{Math.max(0, TOTAL - spawned)}</div>
+          <div className="hl">{language === 'ar' ? 'متبقي' : 'Left'}</div>
+        </div>
+        <div className="hc">
+          <div className="hn" style={{ color: '#ef4444' }}>{missed}</div>
+          <div className="hl">{language === 'ar' ? 'فاتت' : 'Missed'}</div>
+        </div>
+        <div className="hc">
+          <div className="hn" style={{ color: '#f59e0b' }}>{points}</div>
+          <div className="hl">{language === 'ar' ? 'نقاط' : 'Points'}</div>
         </div>
       </div>
 
-      {/* Instructions Modal (Directly in-game for convenience) */}
-      {showInstructions && !hasWonToday && (
-        <div className="w-full max-w-[550px] bg-fruit-primary/10 border border-fruit-primary/20 p-6 rounded-[32px] animate-in slide-in-from-top duration-300">
-          <h4 className="text-fruit-primary font-black mb-2 flex items-center gap-2">
-            <Zap size={18} /> {language === 'ar' ? 'كيفية اللعب:' : 'HOW TO PLAY:'}
-          </h4>
-          <p className="text-white/70 text-sm leading-relaxed font-bold">
-            {language === 'ar'
-              ? 'تجنب جدران المتاهة (الخطوط البيضاء) وابحث عن الفتحات الصغيرة للعبور من خلالها حتى تصل إلى النقطة المتوهجة في المركز لتربح 50 نقطة أطيب فوراً!'
-              : 'Avoid the white walls, find the gaps to pass through, and reach the glowing center to win 50 Atyab Points instantly!'}
-          </p>
+      {/* Progress */}
+      <div className="pt">
+        <div className="ptr">
+          <span className="ptx">{language === 'ar' ? 'التقدم' : 'Progress'}</span>
+          <span className="ptx">{pct}%</span>
         </div>
-      )}
+        <div className="ptrack">
+          <div className="pfill" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
 
-      {/* Main Game Arena */}
+      {/* Arena */}
       <div
-        className="relative w-full max-w-[550px] touch-none cursor-none will-change-transform"
-        onMouseMove={handlePointer}
-        onTouchMove={handlePointer}
+        ref={areaR}
+        className="arena"
+        onMouseMove={(e) => phase === 'playing' && moveBx(e.clientX)}
+        onTouchMove={(e) => {
+          e.preventDefault();
+          moveBx(e.touches[0].clientX);
+        }}
+        onTouchStart={(e) => moveBx(e.touches[0].clientX)}
       >
-        <svg
-          ref={svgRef}
-          viewBox="0 0 100 100"
-          className="w-full h-auto block drop-shadow-2xl"
-          style={{ 
-            filter: 'drop-shadow(0 0 20px rgba(0,0,0,0.5))',
-            touchAction: 'none',
-            WebkitTouchCallout: 'none',
-            WebkitUserSelect: 'none',
-            userSelect: 'none'
-          }}
-        >
-          {/* Maze Rings */}
-          <g fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="3.2" strokeLinecap="round" className="transition-opacity duration-1000">
-            {RING_PATHS.map((d, i) => <path key={i} d={d} />)}
-          </g>
+        <div className="agrid" />
+        <div className="aglow" />
 
-          {/* Winning Center Core */}
-          {!hasWonToday && (
-            <g className="animate-pulse">
-              <circle cx="50" cy="50" r="7.5" fill="rgba(255,26,125,0.15)" stroke="#ff1a7d" strokeWidth="0.5" strokeDasharray="2 2" />
-              <circle cx="50" cy="50" r="3" fill="#ff1a7d" />
-            </g>
-          )}
+        {/* falling fruits */}
+        {active.map((f) => (
+          <div
+            key={f.id}
+            className="fi"
+            style={{
+              left: f.x,
+              top: f.y,
+              fontSize: f.size,
+              transform: `rotate(${f.rot}deg)`,
+            }}
+          >
+            {f.emoji}
+          </div>
+        ))}
 
-          {/* The Player Ball */}
-          <circle
-            ref={ballRef}
-            cx={pos.current.x}
-            cy={pos.current.y}
-            r={BALL_RADIUS}
-            fill="#ff1a7d"
-            filter="drop-shadow(0 0 12px rgba(255,26,125,1))"
-            style={{ pointerEvents: 'none' }}
-          />
+        {/* particles */}
+        {parts.map((p) => (
+          <div
+            key={p.id}
+            className="part"
+            style={{
+              left: p.x,
+              top: p.y,
+              fontSize: p.size,
+              opacity: p.life,
+              transform: `scale(${0.4 + p.life * 0.6})`,
+            }}
+          >
+            {p.emoji}
+          </div>
+        ))}
 
-          <text x="50" y="52" fill="rgba(255,255,255,0.05)" fontSize="3" textAnchor="middle" fontWeight="900">EL ATYAB</text>
-        </svg>
+        {/* combo */}
+        {phase === 'playing' && combo >= 3 && (
+          <div key={combo} className="combo">
+            🔥 ×{combo} {language === 'ar' ? 'كومبو!' : 'Combo!'}
+          </div>
+        )}
 
-        {/* Win Screen Overlay */}
-        {hasWonToday && (
-          <div className="absolute inset-0 backdrop-blur-md rounded-[50px] flex flex-col items-center justify-center pointer-events-none border-4 border-green-500/20 bg-green-500/10 animate-in zoom-in duration-500">
-            <div className="bg-green-500 text-white font-black px-10 py-5 rounded-[30px] shadow-[0_0_50px_rgba(34,197,94,0.4)] scale-110 text-center">
-              <div className="text-2xl mb-1">+{DAILY_REWARD_PTS}</div>
-              <div className="text-sm opacity-90">{language === 'ar' ? 'نقطة أطيب ✓' : 'ATYAB PTS ✓'}</div>
+        {/* catch toast */}
+        {toast_ && (
+          <div key={toast_.key} className="toast" style={{ fontSize: 30 }}>
+            {toast_.emoji}
+          </div>
+        )}
+
+        {/* basket */}
+        {phase === 'playing' && (
+          <div className="bwrap" style={{ left: bx }}>
+            <div className={`brim ${flash ? 'flash' : ''}`} />
+            <div className="bbody">🧺</div>
+          </div>
+        )}
+
+        {/* ── idle ── */}
+        {phase === 'idle' && (
+          <div className="overlay">
+            <div style={{ fontSize: 58, lineHeight: 1 }}>🍎🍌🍊🍇🍓</div>
+            <div
+              className="otitle"
+              style={{
+                background: 'linear-gradient(135deg,#10b981,#f59e0b)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              {language === 'ar' ? 'فواكه الأطيب' : 'Fruit Catcher'}
             </div>
-            <p className="text-white/40 text-xs font-black mt-8 uppercase tracking-[0.3em]">
-              {language === 'ar' ? 'لقد انتهيت اليوم' : 'YOU ARE DONE FOR TODAY'}
-            </p>
+            <div className="osub">
+              {language === 'ar'
+                ? <>تسقط <strong style={{color:"#fff"}}>٥٠ فاكهة</strong> من الأعلى<br/>امسك كلها واكسب <strong style={{color:"#10b981"}}>٥٠ نقطة أطيب!</strong><br/><span style={{fontSize:11,opacity:.55}}>⚡ الفواكه تتسارع مع مرور الوقت</span></>
+                : <>Catch all <strong style={{color:"#fff"}}>50 fruits</strong> falling from above<br/>Earn <strong style={{color:"#10b981"}}>50 Atyab Points!</strong><br/><span style={{fontSize:11,opacity:.55}}>⚡ Fruits speed up over time</span></>}
+            </div>
+            <button className="btn" onClick={start}>
+              🚀 {language === 'ar' ? 'ابدأ اللعبة' : 'Start Game'}
+            </button>
+            <div className="hint">
+              {language === 'ar' ? '🖱️ حرّك الماوس • 👆 اسحب بإصبعك لتحريك السلة' : '🖱️ Move mouse • 👆 Drag to move basket'}
+            </div>
+          </div>
+        )}
+
+        {/* ── over ── */}
+        {phase === 'over' && (
+          <div className="overlay">
+            <div className="stars">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className={`star ${i < stars ? 'on' : ''}`}>
+                  ⭐
+                </div>
+              ))}
+            </div>
+            <div className="otitle">
+              {caught === TOTAL ? (
+                <span style={{ color: '#f59e0b' }}>
+                  {language === 'ar' ? 'مثالي! 🏆' : 'Perfect! 🏆'}
+                </span>
+              ) : caught >= 40 ? (
+                <span style={{ color: '#10b981' }}>
+                  {language === 'ar' ? 'رائع! 🎉' : 'Awesome! 🎉'}
+                </span>
+              ) : caught >= 25 ? (
+                <span style={{ color: '#fff' }}>
+                  {language === 'ar' ? 'جيد 💪' : 'Good 💪'}
+                </span>
+              ) : (
+                <span style={{ color: '#ef4444' }}>
+                  {language === 'ar' ? 'حاول مجدداً 😅' : 'Try again 😅'}
+                </span>
+              )}
+            </div>
+            <div className="osub">
+              {language === 'ar'
+                ? <>جمعت <strong style={{color:"#fff"}}>{caught}</strong> من أصل {TOTAL} فاكهة
+                    {missed > 0 && <><br/><span style={{color:"rgba(239,68,68,.7)"}}>فاتتك {missed} فاكهة</span></>}
+                  </>
+                : <>Caught <strong style={{color:"#fff"}}>{caught}</strong> out of {TOTAL} fruits
+                    {missed > 0 && <><br/><span style={{color:"rgba(239,68,68,.7)"}}>Missed {missed} fruits</span></>}
+                  </>}
+            </div>
+            <div className="opoints">
+              <div className="opn">+{points}</div>
+              <div className="opl">
+                {language === 'ar' ? 'نقطة أطيب' : 'Atyab Points'}
+                <br />
+                <span style={{ fontSize: 10, opacity: 0.5 }}>
+                  {language === 'ar' ? 'تُضاف لرصيدك' : 'Added to your balance'}
+                </span>
+              </div>
+            </div>
+            <button className="btn" onClick={start}>
+              🔄 {language === 'ar' ? 'العب مرة أخرى' : 'Play Again'}
+            </button>
           </div>
         )}
       </div>
 
-      {/* Footer Status */}
-      {!hasWonToday && (
-        <div className="flex flex-col items-center gap-2 opacity-40">
-          <div className="w-1 h-8 bg-white/20 rounded-full animate-bounce" />
-          <span className="text-[10px] font-black tracking-widest uppercase">
-            {language === 'ar' ? 'حرك الكرة نحو المنتج في المركز' : 'GUIDE BALL TO THE CENTER'}
-          </span>
-        </div>
-      )}
-
-      <div className="text-white/10 text-[9px] font-black uppercase text-center mt-2">
-        {language === 'ar'
-          ? `• الحد اليومي: لعبة واحدة لكل جهاز (${getTodayStr()}) •`
-          : `• DAILY LIMIT: 1 PLAY PER DEVICE (${getTodayStr()}) •`}
+      <div className="hint" style={{ marginTop: 8 }}>
+        {language === 'ar' ? 'حرّك الماوس أو اسحب بإصبعك لتحريك السلة' : 'Move mouse or drag to move basket'}
       </div>
-
-      <style>{`
-        @keyframes winPop {
-          0% { transform: scale(0.8); opacity: 0; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-      `}</style>
     </div>
   );
 };
 
-export default Buzzer;
+export default FruitGame;
